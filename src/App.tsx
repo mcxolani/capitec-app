@@ -1,31 +1,21 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router'
+import { BrowserRouter, Routes, Route } from 'react-router'
+import MainLayout from '@/components/layout/MainLayout'
 
 import Home from '@/pages/Home'
 import BranchLocator from '@/pages/BranchLocator'
+import LoanEligibilityPage from '@/pages/LoanEligibilityPage'
+import SpendingInsightsPage from '@/pages/SpendingInsightsPage'
 
 export default function App() {
   return (
     <BrowserRouter>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/branch-locator">Branch Locator</Link>
-          </li>
-          <li>
-            <Link to="/loan-eligibility">Loan Eligibility</Link>
-          </li>
-          <li>
-            <Link to="/spending-insights">Spending Insights</Link>
-          </li>
-        </ul>
-      </nav>
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/branch-locator" element={<BranchLocator />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/branch-locator" element={<BranchLocator />} />
+          <Route path="/loan-eligibility" element={<LoanEligibilityPage />} />
+          <Route path="/spending-insights" element={<SpendingInsightsPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )
