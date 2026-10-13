@@ -1,8 +1,7 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router";
+import { BrowserRouter, Routes, Route, Link } from 'react-router'
 
-import Home from "@/pages/Home";
-import BranchLocator from "@/pages/BranchLocator";
-
+import Home from '@/pages/Home'
+import BranchLocator from '@/pages/BranchLocator'
 
 export default function App() {
   return (
@@ -29,5 +28,5 @@ export default function App() {
         <Route path="/branch-locator" element={<BranchLocator />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }

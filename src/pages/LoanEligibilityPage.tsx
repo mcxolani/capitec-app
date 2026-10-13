@@ -1,3 +1,3 @@
 export default function LoanEligibilityPage() {
-  return <h1>Loan Eligibility Page</h1>;
+  return <h1>Loan Eligibility Page</h1>
 }
