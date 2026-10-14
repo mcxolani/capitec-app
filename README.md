@@ -1,5 +1,16 @@
 # React + TypeScript + Vite
 
+## Production Docker image
+
+Build and run the production image:
+
+```sh
+docker build -t capitec-app .
+docker run --rm -p 8080:8080 capitec-app
+```
+
+Open `http://localhost:8080`. The image builds the app in a Node.js stage and serves the static production files with unprivileged Nginx. Nginx falls back to `index.html` so direct visits to client-side routes work.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
