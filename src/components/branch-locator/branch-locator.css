@@ -1,223 +1,223 @@
 .locator__controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: flex-start;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 }
 
 .locator__body {
-    display: grid;
-    grid-template-columns: 360px minmax(0, 1fr);
-    gap: 1rem;
-    height: 70vh;
-    min-height: 480px;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 1rem;
+  height: 70vh;
+  min-height: 480px;
 }
 
 /* map */
 .branch-map {
-    width: 100%;
-    height: 70vh;
-    min-height: 480px;
-    border-radius: 8px;
-    overflow: hidden;
+  width: 100%;
+  height: 70vh;
+  min-height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .locator__body .branch-map {
-    height: 100%;
+  height: 100%;
 }
 
 .origin-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #1a73e8;
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.35);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.35);
 }
 
 /* search */
 .place-search {
-    position: relative;
-    flex: 1 1 280px;
+  position: relative;
+  flex: 1 1 280px;
 }
 
 .place-search input {
-    width: 100%;
-    padding: 0.6rem 0.75rem;
-    border: 1px solid #c5cad3;
-    border-radius: 6px;
-    font: inherit;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #c5cad3;
+  border-radius: 6px;
+  font: inherit;
 }
 
 .place-search__list {
-    position: absolute;
-    z-index: 20;
-    top: 100%;
-    left: 0;
-    right: 0;
-    margin: 0.25rem 0 0;
-    padding: 0;
-    list-style: none;
-    max-height: 260px;
-    overflow-y: auto;
-    background: #fff;
-    border: 1px solid #c5cad3;
-    border-radius: 6px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #c5cad3;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .place-search__option {
-    padding: 0.6rem 0.75rem;
-    cursor: pointer;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
 }
 
 .place-search__option:hover,
 .place-search__option--active {
-    background: #eef3fc;
+  background: #eef3fc;
 }
 
 /* radius */
 .radius {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .radius select {
-    padding: 0.55rem 0.5rem;
-    border: 1px solid #c5cad3;
-    border-radius: 6px;
-    font: inherit;
-    background: #fff;
+  padding: 0.55rem 0.5rem;
+  border: 1px solid #c5cad3;
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
 }
 
 /* list */
 .branch-list {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .branch-list__summary {
-    margin: 0 0 0.5rem;
-    color: #555;
-    font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+  color: #555;
+  font-size: 0.9rem;
 }
 
 .branch-list__empty {
-    padding: 1rem;
-    background: #fff;
-    border-radius: 8px;
-    color: #555;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  color: #555;
 }
 
 .branch-list__items {
-    flex: 1;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .branch-item {
-    background: #fff;
-    border: 1px solid #dde1e8;
-    border-radius: 8px;
+  background: #fff;
+  border: 1px solid #dde1e8;
+  border-radius: 8px;
 }
 
 .branch-item--selected {
-    border-color: #0b3d91;
-    box-shadow: 0 0 0 2px rgba(11, 61, 145, 0.15);
+  border-color: #0b3d91;
+  box-shadow: 0 0 0 2px rgba(11, 61, 145, 0.15);
 }
 
 .branch-item__header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.15rem 0.5rem;
-    width: 100%;
-    padding: 0.75rem;
-    background: none;
-    border: 0;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .branch-item__name {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .branch-item--selected .branch-item__name {
-    font-size: 1.1rem;
+  font-size: 1.1rem;
 }
 
 .branch-item__distance {
-    color: #0b3d91;
-    font-weight: 600;
+  color: #0b3d91;
+  font-weight: 600;
 }
 
 .branch-item__address {
-    grid-column: 1 / -1;
-    color: #555;
-    font-size: 0.9rem;
+  grid-column: 1 / -1;
+  color: #555;
+  font-size: 0.9rem;
 }
 
 .branch-item__body {
-    padding: 0 0.75rem 0.75rem;
+  padding: 0 0.75rem 0.75rem;
 }
 
 /* info card */
 .info-card {
-    min-width: 220px;
-    max-width: 280px;
+  min-width: 220px;
+  max-width: 280px;
 }
 
 .info-card__title {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
 }
 
 .info-card p {
-    margin: 0 0 0.5rem;
-    color: #444;
+  margin: 0 0 0.5rem;
+  color: #444;
 }
 
 .info-card__meta {
-    display: grid;
-    gap: 0.25rem;
-    margin: 0 0 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 0 0.75rem;
 }
 
 .info-card__meta div {
-    display: flex;
-    gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .info-card__meta dt {
-    width: 4.5rem;
-    color: #666;
+  width: 4.5rem;
+  color: #666;
 }
 
 .info-card__meta dd {
-    margin: 0;
+  margin: 0;
 }
 
 @media (max-width: 800px) {
-    .locator__body {
-        grid-template-columns: 1fr;
-        height: auto;
-    }
+  .locator__body {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 
-    .locator__body .branch-map {
-        height: 55vh;
-        order: -1;
-    }
+  .locator__body .branch-map {
+    height: 55vh;
+    order: -1;
+  }
 
-    .branch-list__items {
-        max-height: 50vh;
-    }
+  .branch-list__items {
+    max-height: 50vh;
+  }
 }
