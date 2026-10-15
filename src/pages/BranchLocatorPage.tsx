@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import PlaceSearch from '@/components/branch-locator/PlaceSearch'
 import type { Origin } from '@/types/branch'
+import RadiusSelect from '@/components/branch-locator/RadiusSelect'
+import { useNearbyBranches } from '@/hooks/useNearbyBranches'
 
 import { APIProvider } from '@vis.gl/react-google-maps'
 import BranchMap from '@/components/branch-locator/BranchMap'
@@ -12,7 +14,9 @@ const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 export default function BranchLocatorPage() {
   const [origin, setOrigin] = useState<Origin | null>(null)
   const [query, setQuery] = useState('')
-  const radiusKm = 10
+
+  const [radiusKm, setRadiusKm] = useState(10)
+  const { results, error } = useNearbyBranches(origin, radiusKm)
 
   const handleOrigin = (next: Origin) => {
     setOrigin(next)
@@ -30,8 +34,14 @@ export default function BranchLocatorPage() {
         <div className="locator__controls">
           <PlaceSearch value={query} onValueChange={setQuery} onSelect={handleOrigin} />
           <UseMyLocation onLocated={handleOrigin} />
+          <RadiusSelect value={radiusKm} onChange={setRadiusKm} />
         </div>
-        <BranchMap origin={origin} radiusKm={radiusKm} />
+        {error && (
+          <p className="field-error" role="alert">
+            {error}
+          </p>
+        )}
+        <BranchMap origin={origin} radiusKm={radiusKm} branches={results} />
       </APIProvider>
     </section>
   )
