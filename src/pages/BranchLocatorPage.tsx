@@ -1,8 +1,6 @@
-
 import { useState } from 'react'
 import PlaceSearch from '@/components/branch-locator/PlaceSearch'
 import type { Origin } from '@/types/branch'
-
 
 import { APIProvider } from '@vis.gl/react-google-maps'
 import BranchMap from '@/components/branch-locator/BranchMap'
