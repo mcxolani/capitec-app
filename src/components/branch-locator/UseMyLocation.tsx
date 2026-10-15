@@ -14,8 +14,13 @@ export default function UseMyLocation({ onLocated }: Props) {
   }
 
   return (
-    <div>
-      <button type="button" className="btn" onClick={handleClick} disabled={loading}>
+    <div className="use-my-location">
+      <button
+        type="button"
+        className="btn use-my-location__btn"
+        onClick={handleClick}
+        disabled={loading}
+      >
         {loading ? 'Locating…' : 'Use my location'}
       </button>
       {error && (

@@ -22,7 +22,15 @@ export default function Header() {
 
   return (
     <header className="header">
-      <span className="header__brand">Capitec Bank</span>
+      <span className="header__brand">
+        <img
+          width={'30px'}
+          src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg"
+          alt=""
+          aria-hidden="true"
+        />
+        Capitec
+      </span>
       <button
         type="button"
         className="header__toggle"

@@ -19,13 +19,16 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: #0b3d91;
-  color: #fff;
+  background: #ffffff;
+  color: #000;
 }
 
 .header__brand {
   font-weight: 700;
   font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .header__nav {
@@ -35,19 +38,19 @@
 }
 
 .header__link {
-  color: #cfdcf7;
+  color: #01236b;
   text-decoration: none;
   padding-bottom: 2px;
   border-bottom: 2px solid transparent;
 }
 
 .header__link:hover {
-  color: #fff;
+  color: #01236b;
 }
 
 .header__link--active {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: #01236b;
+  border-bottom-color: #01236b;
 }
 
 .header__toggle {
@@ -58,16 +61,17 @@
   width: 40px;
   height: 40px;
   padding: 8px;
-  border: 1px solid rgb(255 255 255 / 40%);
+  border: 1px solid rgba(77, 1, 1, 0.4);
   border-radius: 6px;
-  background: transparent;
+  background: rgb(255, 255, 255);
+  color: #01236b;
   cursor: pointer;
 }
 
 .header__toggle-bar {
   display: block;
   height: 2px;
-  background: #fff;
+  background: #01236b;
   border-radius: 1px;
   transition:
     transform 0.2s ease,

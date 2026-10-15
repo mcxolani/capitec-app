@@ -220,4 +220,13 @@
   .branch-list__items {
     max-height: 50vh;
   }
+
+  .use-my-location {
+    flex-basis: 100%;
+  }
+
+  .use-my-location__btn {
+    display: block;
+    width: 100%;
+  }
 }
