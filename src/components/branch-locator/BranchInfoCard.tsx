@@ -1,5 +1,6 @@
 import { formatDistance } from '@/utils/distance'
 import type { BranchWithDistance } from '@/types/branch'
+import { directionsUrl } from '@/utils/maps'
 
 interface Props {
   branch: BranchWithDistance
@@ -29,6 +30,15 @@ export default function BranchInfoCard({ branch, hideTitle = false }: Props) {
           </div>
         )}
       </dl>
+
+      <a
+        className="btn btn--primary"
+        href={directionsUrl(branch.position)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Navigate
+      </a>
     </div>
   )
 }
