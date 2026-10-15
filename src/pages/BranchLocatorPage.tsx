@@ -1,25 +1,23 @@
 import { useState } from 'react'
-import PlaceSearch from '@/components/branch-locator/PlaceSearch'
-import type { Origin } from '@/types/branch'
-import RadiusSelect from '@/components/branch-locator/RadiusSelect'
-import { useNearbyBranches } from '@/hooks/useNearbyBranches'
-
 import { APIProvider } from '@vis.gl/react-google-maps'
-import BranchMap from '@/components/branch-locator/BranchMap'
-import '@/components/branch-locator/branch-locator.css'
-import UseMyLocation from '@/components/branch-locator/UseMyLocation'
 import BranchList from '@/components/branch-locator/BranchList'
+import BranchMap from '@/components/branch-locator/BranchMap'
+import PlaceSearch from '@/components/branch-locator/PlaceSearch'
+import RadiusSelect from '@/components/branch-locator/RadiusSelect'
+import UseMyLocation from '@/components/branch-locator/UseMyLocation'
+import { useNearbyBranches } from '@/hooks/useNearbyBranches'
+import type { Origin } from '@/types/branch'
+import '@/components/branch-locator/branch-locator.css'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
 export default function BranchLocatorPage() {
   const [origin, setOrigin] = useState<Origin | null>(null)
   const [query, setQuery] = useState('')
-
   const [radiusKm, setRadiusKm] = useState(10)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const { results, loading, error } = useNearbyBranches(origin, radiusKm)
 
+  const { results, loading, error } = useNearbyBranches(origin, radiusKm)
   const activeId = results.some((b) => b.id === selectedId) ? selectedId : null
 
   const handleOrigin = (next: Origin) => {
@@ -41,11 +39,8 @@ export default function BranchLocatorPage() {
           <UseMyLocation onLocated={handleOrigin} />
           <RadiusSelect value={radiusKm} onChange={setRadiusKm} />
         </div>
-        {error && (
-          <p className="field-error" role="alert">
-            {error}
-          </p>
-        )}
+
+        {error && <p role="alert">{error}</p>}
 
         <div className="locator__body">
           <BranchList
