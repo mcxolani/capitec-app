@@ -1,0 +1,129 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #0b3d91;
+  color: #fff;
+}
+
+.header__brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.header__nav {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.header__link {
+  color: #cfdcf7;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.header__link:hover {
+  color: #fff;
+}
+
+.header__link--active {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.header__toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.header__toggle-bar {
+  display: block;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.header__toggle[aria-expanded='true'] .header__toggle-bar:nth-child(2) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.header__toggle[aria-expanded='true'] .header__toggle-bar:nth-child(3) {
+  opacity: 0;
+}
+
+.header__toggle[aria-expanded='true'] .header__toggle-bar:nth-child(4) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .header {
+    gap: 0;
+  }
+
+  .header__toggle {
+    display: flex;
+  }
+
+  .header__nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 0.75rem;
+  }
+
+  .header__nav--open {
+    display: flex;
+  }
+
+  .header__link {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 15%);
+  }
+
+  .header__link:last-child {
+    border-bottom: none;
+  }
+
+  .header__link--active {
+    border-bottom-color: rgb(255 255 255 / 15%);
+    font-weight: 600;
+  }
+}
+
+.footer {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  color: #666;
+}
