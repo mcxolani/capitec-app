@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { formatDistance } from '@/utils/distance'
 import type { BranchWithDistance } from '@/types/branch'
+import BranchInfoCard from './BranchInfoCard'
 
 interface Props {
   branch: BranchWithDistance
@@ -31,8 +32,7 @@ export default function BranchListItem({ branch, selected, onSelect }: Props) {
 
       {selected && (
         <div className="branch-item__body">
-          <p>{branch.hours}</p>
-          {branch.phone && <p>{branch.phone}</p>}
+          <BranchInfoCard branch={branch} hideTitle />
         </div>
       )}
     </li>

@@ -1,5 +1,12 @@
 import { useEffect } from 'react'
-import { AdvancedMarker, Map as GoogleMap, Pin, useMap } from '@vis.gl/react-google-maps'
+import {
+  AdvancedMarker,
+  InfoWindow,
+  Map as GoogleMap,
+  Pin,
+  useMap,
+} from '@vis.gl/react-google-maps'
+import BranchInfoCard from './BranchInfoCard'
 import RadiusCircle from './RadiusCircle'
 import type { BranchWithDistance, LatLng, Origin } from '@/types/branch'
 
@@ -65,6 +72,16 @@ export default function BranchMap({ origin, radiusKm, branches, selectedId, onSe
           </AdvancedMarker>
         )
       })}
+
+      {selected && (
+        <InfoWindow
+          position={selected.position}
+          pixelOffset={[0, -50]}
+          onCloseClick={() => onSelect(null)}
+        >
+          <BranchInfoCard branch={selected} />
+        </InfoWindow>
+      )}
 
       <PanToPosition position={selected?.position ?? null} />
     </GoogleMap>
