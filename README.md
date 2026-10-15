@@ -9,7 +9,7 @@ A React + TypeScript single-page app built with Vite. It currently includes a br
 - Search for an address or place (Google Places autocomplete), or use the browser's current location.
 - Filter branches within a chosen radius (1, 5, 10, 25 or 50 km), shown as a circle on the map.
 - Results are sorted by straight-line distance from the chosen point.
-- Branch data is mocked in [`src/api/branchApi.ts`](src/api/branchApi.ts) (Gauteng branches with a simulated network delay). Replace `fetchBranches()` to connect a real API.
+- Branch data is mocked in [`src/api/branchApi.ts`](src/api/branchApi.ts) (branches in Gauteng, Cape Town and Durban, with a simulated network delay). Replace `fetchBranches()` to connect a real API.
 
 ### Coming soon
 
