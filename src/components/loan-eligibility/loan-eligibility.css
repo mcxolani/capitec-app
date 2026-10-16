@@ -66,3 +66,79 @@
     justify-self: stretch;
   }
 }
+
+/* result */
+.loan-result {
+  display: grid;
+  gap: 1rem;
+}
+
+.loan-result__summary {
+  padding: 1.25rem;
+  border-radius: 8px;
+  border-left: 6px solid;
+}
+
+.loan-result__summary h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.loan-result__summary h2:focus {
+  outline: none;
+}
+
+.loan-result__summary p {
+  margin: 0;
+}
+
+.loan-result--eligible .loan-result__summary {
+  background: #e8f5e9;
+  border-color: #2e7d32;
+}
+
+.loan-result--partial .loan-result__summary {
+  background: #fff8e1;
+  border-color: #b26a00;
+}
+
+.loan-result--declined .loan-result__summary {
+  background: #fdecea;
+  border-color: #b00020;
+}
+
+.loan-result__panel {
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #dde1e8;
+  border-radius: 8px;
+}
+
+.loan-result__panel h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.loan-result__figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem 1.25rem;
+  margin: 0;
+}
+
+.loan-result__figures dt {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.loan-result__figures dd {
+  margin: 0.15rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.loan-result__disclaimer {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+}
