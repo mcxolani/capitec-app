@@ -1,0 +1,12 @@
+# Usage: docker compose --env-file .env.local up --build
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY:?set VITE_GOOGLE_MAPS_API_KEY}
+        VITE_GOOGLE_MAP_ID: ${VITE_GOOGLE_MAP_ID:-DEMO_MAP_ID}
+    image: capitec-app
+    ports:
+      - '${PORT:-8080}:8080'
+    restart: unless-stopped
