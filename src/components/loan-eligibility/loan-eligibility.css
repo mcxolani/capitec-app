@@ -70,7 +70,8 @@
 .loan-result__summary {
   padding: 1.25rem;
   border-radius: 8px;
-  border-left: 6px solid;
+  border-left: 3px solid;
+  border-bottom: 3px solid;
 }
 
 .loan-result__summary h2 {
