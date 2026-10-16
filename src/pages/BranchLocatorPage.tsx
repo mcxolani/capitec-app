@@ -27,7 +27,13 @@ export default function BranchLocatorPage() {
   }
 
   if (!API_KEY) {
-    return <p role="alert">Missing VITE_GOOGLE_MAPS_API_KEY. Add it to .env.local and restart.</p>
+    return (
+      <p role="alert">
+        {import.meta.env.DEV
+          ? 'Missing VITE_GOOGLE_MAPS_API_KEY. Add it to .env.local and restart.'
+          : 'The branch locator is unavailable right now. Please try again later.'}
+      </p>
+    )
   }
 
   return (

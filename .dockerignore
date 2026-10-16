@@ -1,6 +1,11 @@
 node_modules
 dist
+coverage
 .git
+.github
+.husky
 .vscode
 .idea
 *.log
+# keep secrets out of the build context; pass them as build args instead
+.env*

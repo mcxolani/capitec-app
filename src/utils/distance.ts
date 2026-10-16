@@ -13,5 +13,6 @@ export function distanceKm(a: LatLng, b: LatLng): number {
 }
 
 export function formatDistance(km: number): string {
-  return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`
+  const metres = Math.round(km * 1000)
+  return metres < 1000 ? `${metres} m` : `${km.toFixed(1)} km`
 }

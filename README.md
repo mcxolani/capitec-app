@@ -39,15 +39,26 @@ Vite inlines `VITE_*` variables into the client bundle at build time, so the API
 
 ## Scripts
 
-| Command                | Description                               |
-| ---------------------- | ----------------------------------------- |
-| `npm run dev`          | Start the dev server with hot reload.     |
-| `npm run build`        | Type-check and build to `dist/`.          |
-| `npm run preview`      | Serve the production build locally.       |
-| `npm run lint`         | Run ESLint.                               |
-| `npm run lint:fix`     | Run ESLint and fix what it can.           |
-| `npm run format`       | Format all files with Prettier.           |
-| `npm run format:check` | Check formatting without writing changes. |
+| Command                 | Description                                   |
+| ----------------------- | --------------------------------------------- |
+| `npm run dev`           | Start the dev server with hot reload.         |
+| `npm run build`         | Type-check and build to `dist/`.              |
+| `npm run preview`       | Serve the production build locally.           |
+| `npm run typecheck`     | Run the TypeScript compiler without building. |
+| `npm test`              | Run the tests once.                           |
+| `npm run test:watch`    | Run the tests in watch mode.                  |
+| `npm run test:coverage` | Run the tests with a coverage report.         |
+| `npm run lint`          | Run ESLint.                                   |
+| `npm run lint:fix`      | Run ESLint and fix what it can.               |
+| `npm run format`        | Format all files with Prettier.               |
+| `npm run format:check`  | Check formatting without writing changes.     |
+
+## Testing
+
+Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) in a jsdom environment. Test files sit next to the code they cover (`*.test.ts` / `*.test.tsx`); shared helpers live in `src/test/`.
+
+- **Google Maps:** the map components (`BranchMap`, `RadiusCircle`) need a real browser and API key, so they aren't unit tested. Page and search tests replace `@vis.gl/react-google-maps` with a stub, so the tests never call Google.
+- **Geolocation:** `mockGeolocation()` in `src/test/geolocation.ts` stubs `navigator.geolocation` to succeed with a given position or fail with a permission or availability error.
 
 ## Project structure
 
@@ -58,29 +69,52 @@ src/
     layout/     header with responsive menu, footer, page layout
     branch-locator/
   hooks/        useGeolocation, useNearbyBranches, useDebounce
-  pages/        one component per route
+  pages/        one component per route, lazy-loaded except Home
+  test/         test setup, fixtures and stubs
   types/        shared TypeScript types
   utils/        distance calculation, map helpers
 ```
 
 Imports use the `@/` alias for `src/` (for example `@/hooks/useGeolocation`).
 
-## Git hooks
+Each page renders inside an error boundary, so a crash on one page shows a "Something went wrong" message instead of a blank screen, and navigating to another page recovers. Unknown URLs show a "Page not found" page.
+
+## Git hooks and CI
 
 Husky installs the hooks on `npm install`. The pre-commit hook runs [lint-staged](https://github.com/lint-staged/lint-staged) on staged files only:
 
-- `.ts`, `.tsx`, `.js`, `.jsx`: `eslint --fix`, then `prettier --write`
+- `.ts`, `.tsx`, `.js`, `.jsx`: `eslint --fix`, `prettier --write`, then the tests related to those files
 - `.css`, `.json`, `.md`, `.html`, `.yml`: `prettier --write`
 
-Fixes are added back to the same commit. The commit is blocked if ESLint finds an error it can't fix.
+Fixes are added back to the same commit. The commit is blocked if ESLint finds an error it can't fix or a related test fails.
+
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on pull requests and pushes to `main`: format check, lint, type check, tests with coverage, production build, and a Docker image build.
 
 ## Production Docker image
 
+The API key is passed as a build argument, because Vite builds it into the JavaScript. `.env*` files are excluded from the Docker build context. The build stops if the key is missing.
+
+With Docker Compose, reading the values from `.env.local`:
+
 ```sh
-docker build -t capitec-app .
+docker compose --env-file .env.local up --build
+```
+
+Or with plain Docker:
+
+```sh
+docker build \
+  --build-arg VITE_GOOGLE_MAPS_API_KEY=your-key \
+  --build-arg VITE_GOOGLE_MAP_ID=your-map-id \
+  -t capitec-app .
 docker run --rm -p 8080:8080 capitec-app
 ```
 
-Open `http://localhost:8080`. The image builds the app in a Node.js stage and serves the static files with unprivileged Nginx. Nginx falls back to `index.html`, so direct visits to client-side routes work.
+Open `http://localhost:8080`. Set `PORT` to publish on a different host port with Compose (for example `PORT=8081 docker compose --env-file .env.local up --build`).
 
-The environment variables are read at build time, so `.env.local` must exist before running `docker build`.
+The image builds the app in a Node.js stage and serves it with unprivileged Nginx on port 8080. Nginx:
+
+- falls back to `index.html`, so direct visits to client-side routes work
+- caches the fingerprinted files in `/assets/` for a year, and makes browsers revalidate `index.html` so new deploys show up straight away
+- gzips text responses and sends security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`)
+- answers `GET /healthz` for the container health check
