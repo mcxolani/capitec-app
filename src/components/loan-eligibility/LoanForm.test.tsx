@@ -30,16 +30,6 @@ describe('LoanForm', () => {
     }
   })
 
-  it('describes fields with their hints', () => {
-    renderForm()
-
-    expect(field('Monthly expenses (R)')).toHaveAccessibleDescription(
-      'Everything you pay each month, including debt repayments',
-    )
-    expect(field('Loan amount (R)')).toHaveAccessibleDescription('R5,000 to R300,000')
-    expect(field('Term (months)')).toHaveAccessibleDescription('6 to 60 months')
-  })
-
   it('only asks for employment duration when employed or self-employed', async () => {
     renderForm()
     const label = 'Months in current employment'
@@ -80,9 +70,10 @@ describe('LoanForm', () => {
     expect(field('Age')).toHaveAttribute('aria-invalid', 'true')
     expect(field('Age')).toHaveAccessibleDescription('Age must be between 18 and 65')
     expect(field('Loan amount (R)')).toHaveAccessibleDescription(
-      'R5,000 to R300,000 Loan amount must be between R5,000 and R300,000',
+      'Loan amount must be between R5,000 and R300,000',
     )
     expect(field(/credit score/i)).toHaveAttribute('aria-invalid', 'false')
+    expect(field(/credit score/i)).not.toHaveAttribute('aria-describedby')
   })
 
   it('does not show errors while typing before the first submit', async () => {

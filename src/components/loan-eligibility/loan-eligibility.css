@@ -29,12 +29,6 @@
   font-weight: 500;
 }
 
-.loan-field__hint {
-  margin: 0;
-  color: #666;
-  font-size: 0.85rem;
-}
-
 .loan-field input,
 .loan-field select {
   padding: 0.6rem 0.75rem;

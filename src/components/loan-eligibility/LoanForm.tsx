@@ -6,7 +6,6 @@ import type {
   LoanPurpose,
   ValidationRules,
 } from '@/types/loan'
-import { formatRand } from '@/utils/currency'
 import { EMPTY_LOAN_FORM, PERSONAL_LOAN_PURPOSES, validateLoanForm } from '@/utils/loanValidation'
 import type { LoanFormErrors, LoanFormValues } from '@/utils/loanValidation'
 
@@ -40,42 +39,24 @@ export default function LoanForm({ rules, submitting, onSubmit }: Props) {
   // errors only show after the first submit, then update as the user fixes them
   const [submitted, setSubmitted] = useState(false)
 
-  const { requestedAmount, loanTerm } = rules.loanDetails
-  const hints: Partial<Record<FieldName, string>> = {
-    monthlyIncome: 'After tax',
-    monthlyExpenses: 'Everything you pay each month, including debt repayments',
-    existingDebt: 'The part of your expenses that goes to loans and credit',
-    creditScore: 'Between 300 and 850, if you know it',
-    requestedAmount: `${formatRand(requestedAmount.min ?? 0)} to ${formatRand(requestedAmount.max ?? 0)}`,
-    loanTerm: `${loanTerm.min} to ${loanTerm.max} months`,
-  }
-
   const update = (name: FieldName, value: string) => {
     const next = { ...values, [name]: value }
     setValues(next)
     if (submitted) setErrors(validateLoanForm(next, rules).errors)
   }
 
-  // props shared by every control: id for the label, plus its hint and error for screen readers
+  // props shared by every control: id for the label, plus its error for screen readers
   const control = (name: FieldName) => ({
     id: `loan-${name}`,
     name,
     value: values[name],
     'aria-invalid': Boolean(errors[name]),
-    'aria-describedby':
-      [hints[name] && `loan-${name}-hint`, errors[name] && `loan-${name}-error`]
-        .filter(Boolean)
-        .join(' ') || undefined,
+    'aria-describedby': errors[name] ? `loan-${name}-error` : undefined,
   })
 
   const field = (name: FieldName, label: string, input: ReactNode) => (
     <div className="loan-field">
       <label htmlFor={`loan-${name}`}>{label}</label>
-      {hints[name] && (
-        <p id={`loan-${name}-hint`} className="loan-field__hint">
-          {hints[name]}
-        </p>
-      )}
       {input}
       {errors[name] && (
         <p id={`loan-${name}-error`} className="field-error">
