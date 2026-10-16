@@ -1,6 +1,6 @@
 # Capitec App
 
-A React + TypeScript single-page app built with Vite. It currently includes a branch locator; the loan eligibility and spending insights pages are placeholders.
+A React + TypeScript single-page app built with Vite. It includes a branch locator and a loan eligibility simulator; the spending insights page is a placeholder.
 
 ## Features
 
@@ -11,9 +11,32 @@ A React + TypeScript single-page app built with Vite. It currently includes a br
 - Results are sorted by straight-line distance from the chosen point.
 - Branch data is mocked in [`src/api/branchApi.ts`](src/api/branchApi.ts) (branches in Gauteng, Cape Town and Durban, with a simulated network delay). Replace `fetchBranches()` to connect a real API.
 
+### Loan eligibility simulator (`/loan-eligibility`)
+
+Customers enter their income, expenses and the loan they want, and get an estimate of whether they'd qualify, what they could borrow and what it would cost.
+
+- The API from the [spec](<docs/LoanEligibilitySimulatorEndpoints%20(2).md>) is mocked in [`src/api/loanApi.ts`](src/api/loanApi.ts): eligibility check, loan products, rate calculator and validation rules, each with a simulated network delay.
+- The form validates against the rules the API returns and shows every error at once. Hints, errors and focus are wired up for screen readers.
+- Results come in three forms: eligible, over budget (with the largest affordable amount suggested instead), and declined, each with a plain-language reason.
+- Every result says it's an estimate from simulated data, not a credit decision or loan offer. The approval likelihood is capped at 95%.
+
+The lending rules live in [`src/utils/loanEligibility.ts`](src/utils/loanEligibility.ts), with every threshold as a named constant. They're illustrative, not a real credit policy:
+
+| Rule                          | Value                                                                                                                                    |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Disposable income             | Income − expenses (expenses include debt repayments, as in the spec's example)                                                           |
+| Affordable repayment          | Up to 80% of disposable income                                                                                                           |
+| Interest rate by credit score | 750+: 10.5% · 650+: 12.5% · 550+: 15.5% · lower: 18.5% · none given: 15.5%                                                               |
+| Declined                      | Under 18 or over 65, unemployed, under 3 months employed, income under R5,000, no disposable income, or existing debt over 40% of income |
+| Risk                          | Low: debt ≤ 20% of income and credit score ≥ 650 · High: debt > 35% or score < 550 · otherwise medium                                    |
+
+Where the spec's example numbers are inconsistent, the code follows the standard formulas instead:
+
+- **Monthly payment:** R150,000 at 12.5% over 24 months is R7,096.10 with the standard amortisation formula, not the spec's R7,089.50. The spec's own month 1 interest doesn't match its rate either.
+- **Loan-to-income ratio:** loan ÷ annual income, so 50% for the example. The spec's 60% doesn't follow from any standard definition.
+
 ### Coming soon
 
-- Loan eligibility (`/loan-eligibility`)
 - Spending insights (`/spending-insights`)
 
 ## Getting started
@@ -64,15 +87,16 @@ Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testi
 
 ```
 src/
-  api/          data fetching (mock branch API)
+  api/          data fetching (mock branch and loan APIs)
   components/
     layout/     header with responsive menu, footer, page layout
     branch-locator/
+    loan-eligibility/
   hooks/        useGeolocation, useNearbyBranches, useDebounce
   pages/        one component per route, lazy-loaded except Home
   test/         test setup, fixtures and stubs
   types/        shared TypeScript types
-  utils/        distance calculation, map helpers
+  utils/        distance, maps, currency, loan calculations, eligibility rules, form validation
 ```
 
 Imports use the `@/` alias for `src/` (for example `@/hooks/useGeolocation`).
@@ -129,5 +153,6 @@ I used Claude Code (an AI coding assistant) for:
 - **Production hardening:** TypeScript strict mode, error boundary, 404 page, lazy-loaded routes, Nginx caching and security headers, Docker build args and health check, Docker Compose, GitHub Actions CI
 - **Smaller additions:** responsive header menu, full-width mobile location button, lint-staged pre-commit hook, Cape Town and Durban mock data, README
 - **Fixes:** error message rendered outside the JSX, missing Google Maps types, a distance rounding bug ("1000 m" instead of "1.0 km")
+- **Loan eligibility simulator:** built with Claude Code one small commit at a time, with each commit reviewed before it went in. I made the decisions where the spec was ambiguous or inconsistent: how existing debt affects disposable income, the 80% affordability buffer, and the loan-to-income definition. Claude Code wrote the code and tests and flagged where the spec's numbers didn't add up.
 
 I reviewed every AI-generated change, and all of it passes lint, type checks and tests.
