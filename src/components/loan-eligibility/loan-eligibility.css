@@ -1,0 +1,68 @@
+.loan-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.loan-form fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.25rem;
+  margin: 0;
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #dde1e8;
+  border-radius: 8px;
+}
+
+.loan-form legend {
+  padding: 0 0.35rem;
+  font-weight: 600;
+}
+
+.loan-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.loan-field label {
+  font-weight: 500;
+}
+
+.loan-field__hint {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.loan-field input,
+.loan-field select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #c5cad3;
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+}
+
+.loan-field [aria-invalid='true'] {
+  border-color: #b00020;
+}
+
+.loan-field .field-error {
+  margin: 0;
+}
+
+.loan-form__submit {
+  justify-self: start;
+  padding: 0.7rem 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .loan-form fieldset {
+    padding: 1rem;
+  }
+
+  .loan-form__submit {
+    justify-self: stretch;
+  }
+}

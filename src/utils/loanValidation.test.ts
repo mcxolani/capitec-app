@@ -1,5 +1,5 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { fetchValidationRules } from '@/api/loanApi'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { loadValidationRules } from '@/test/loanRules'
 import type { ValidationRules } from '@/types/loan'
 import { EMPTY_LOAN_FORM, parseAmount, validateLoanForm } from './loanValidation'
 import type { LoanFormValues } from './loanValidation'
@@ -7,11 +7,7 @@ import type { LoanFormValues } from './loanValidation'
 let rules: ValidationRules
 
 beforeAll(async () => {
-  vi.useFakeTimers()
-  const pending = fetchValidationRules()
-  await vi.advanceTimersByTimeAsync(300)
-  rules = await pending
-  vi.useRealTimers()
+  rules = await loadValidationRules()
 })
 
 // the spec's example request, as typed into the form
