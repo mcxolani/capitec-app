@@ -118,3 +118,16 @@ The image builds the app in a Node.js stage and serves it with unprivileged Ngin
 - caches the fingerprinted files in `/assets/` for a year, and makes browsers revalidate `index.html` so new deploys show up straight away
 - gzips text responses and sends security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`)
 - answers `GET /healthz` for the container health check
+
+## AI usage disclosure
+
+I wrote the core application myself: the branch locator (place search, map, branch list, geolocation and nearby-branch hooks, distance utilities, Gauteng mock data), routing, page layout, and the lint and Prettier setup.
+
+I used Claude Code (an AI coding assistant) for:
+
+- **Tests:** the full Vitest and React Testing Library suite and test helpers
+- **Production hardening:** TypeScript strict mode, error boundary, 404 page, lazy-loaded routes, Nginx caching and security headers, Docker build args and health check, Docker Compose, GitHub Actions CI
+- **Smaller additions:** responsive header menu, full-width mobile location button, lint-staged pre-commit hook, Cape Town and Durban mock data, README
+- **Fixes:** error message rendered outside the JSX, missing Google Maps types, a distance rounding bug ("1000 m" instead of "1.0 km")
+
+I reviewed every AI-generated change, and all of it passes lint, type checks and tests.
