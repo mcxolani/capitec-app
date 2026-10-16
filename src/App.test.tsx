@@ -23,7 +23,7 @@ describe('App routing', () => {
   it('lazy-loads other pages', async () => {
     visit('/loan-eligibility')
     expect(
-      await screen.findByRole('heading', { name: 'Loan Eligibility Page' }),
+      await screen.findByRole('heading', { name: 'Loan Eligibility Simulator' }),
     ).toBeInTheDocument()
   })
 

@@ -142,3 +142,46 @@
   color: #666;
   font-size: 0.85rem;
 }
+
+/* page */
+.loan-page__intro {
+  max-width: 42rem;
+  margin: 0 0 1.5rem;
+  color: #444;
+}
+
+.loan-page__body {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.loan-page__body > .loan-result {
+  position: sticky;
+  top: 1rem;
+}
+
+.loan-page__placeholder,
+.loan-page__message {
+  margin: 0;
+  padding: 1.25rem;
+  color: #555;
+  background: #fff;
+  border: 1px dashed #c5cad3;
+  border-radius: 8px;
+}
+
+.loan-page__message p {
+  margin: 0 0 0.75rem;
+}
+
+@media (max-width: 900px) {
+  .loan-page__body {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-page__body > .loan-result {
+    position: static;
+  }
+}
