@@ -127,6 +127,60 @@ public class SpendingService {
         return new SpendingTrends(trends);
     }
 
+    public SpendingTransactions getTransactions(String customerId, int limit, int offset, String category,
+            String period, String startDate, String endDate, String sortBy) {
+        validateCustomer(customerId);
+        if (limit < 0 || offset < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "limit and offset must be zero or greater");
+        }
+        if (!List.of("date_desc", "date_asc", "amount_desc", "amount_asc").contains(sortBy)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported sortBy value");
+        }
+
+        String selectedCategory = validateCategory(category);
+        List<SpendingTransaction> matches;
+        if (period == null && startDate == null && endDate == null) {
+            matches = transactions.stream()
+                    .filter(transaction -> selectedCategory == null || transaction.category().equals(selectedCategory))
+                    .toList();
+        } else {
+            SpendingDateRange range = resolveRange(period == null ? "30d" : period, startDate, endDate);
+            matches = filterTransactions(range.startDate(), range.endDate(), selectedCategory);
+        }
+
+        Comparator<SpendingTransaction> order = switch (sortBy) {
+            case "date_asc" -> Comparator.comparing(SpendingTransaction::date);
+            case "amount_asc" -> Comparator.comparingDouble(SpendingTransaction::amount);
+            case "amount_desc" -> Comparator.comparingDouble(SpendingTransaction::amount).reversed();
+            default -> Comparator.comparing(SpendingTransaction::date).reversed();
+        };
+        List<SpendingTransaction> sorted = new ArrayList<>(matches);
+        sorted.sort(order.thenComparing(SpendingTransaction::id));
+
+        int pageLimit = Math.min(limit, 100);
+        List<SpendingTransactions.Transaction> page = sorted.stream()
+                .skip(offset)
+                .limit(pageLimit)
+                .map(transaction -> new SpendingTransactions.Transaction(
+                        transaction.id(),
+                        transaction.date(),
+                        transaction.merchant(),
+                        transaction.category(),
+                        transaction.amount(),
+                        transaction.description(),
+                        transaction.paymentMethod(),
+                        transaction.icon(),
+                        transaction.categoryColor()
+                ))
+                .toList();
+
+        return new SpendingTransactions(
+                page,
+                new SpendingTransactions.Pagination(
+                        sorted.size(), pageLimit, offset, (long) offset + pageLimit < sorted.size())
+        );
+    }
+
     private int periodDays(String period) {
         return switch (period) {
             case "7d" -> 7;

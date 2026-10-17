@@ -50,4 +50,19 @@ public class SpendingController {
     ) {
         return spendingService.getTrends(customerId, months, category);
     }
+
+    @GetMapping("/transactions")
+    public SpendingTransactions getTransactions(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String period,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(defaultValue = "date_desc") String sortBy
+    ) {
+        return spendingService.getTransactions(
+                customerId, limit, offset, category, period, startDate, endDate, sortBy);
+    }
 }

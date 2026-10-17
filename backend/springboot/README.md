@@ -19,6 +19,7 @@ Use the port you started the app on for these URLs:
 - Spending summary: `http://localhost:<port>/api/customers/12345/spending/summary?period=30d`
 - Spending categories: `http://localhost:<port>/api/customers/12345/spending/categories?period=30d`
 - Spending trends: `http://localhost:<port>/api/customers/12345/spending/trends?months=12`
+- Transactions: `http://localhost:<port>/api/customers/12345/transactions?limit=20&offset=0`
 - Loan products: `http://localhost:<port>/api/loans/products`
 - Loan validation rules: `http://localhost:<port>/api/loans/validation-rules`
 - Calculate a loan rate: `POST http://localhost:<port>/api/loans/calculate-rate`
