@@ -2,6 +2,7 @@ package com.capitec.demo.spending;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,5 +18,16 @@ public class SpendingController {
     @GetMapping("/profile")
     public CustomerProfile getProfile(@PathVariable String customerId) {
         return spendingService.getProfile(customerId);
+    }
+
+    @GetMapping("/spending/summary")
+    public SpendingSummary getSummary(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "30d") String period,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getSummary(customerId, period, startDate, endDate, category);
     }
 }

@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,18 +35,109 @@ public class SpendingService {
             {"Prepaid electricity", "Vodacom", "Municipal water"}
     };
 
-    private final List<SpendingTransaction> transactions = generateTransactions(Instant.now());
+    private final Instant snapshotTime = Instant.now();
+    private final LocalDate today = snapshotTime.atZone(SOUTH_AFRICA).toLocalDate();
+    private final List<SpendingTransaction> transactions = generateTransactions(snapshotTime);
 
     public CustomerProfile getProfile(String customerId) {
-        if (!customerId.equals("12345")) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
-        }
+        validateCustomer(customerId);
 
         SpendingTransaction oldest = transactions.getLast();
         long totalCents = transactions.stream().mapToLong(transaction -> Math.round(transaction.amount() * 100)).sum();
         String joinDate = oldest.date().atZone(ZoneOffset.UTC).toLocalDate().toString();
         return new CustomerProfile("12345", "John Doe", "john.doe@example.com", joinDate,
                 "premium", totalCents / 100.0, "ZAR");
+    }
+
+    public SpendingSummary getSummary(String customerId, String period, String startDate, String endDate, String category) {
+        validateCustomer(customerId);
+        int periodDays = switch (period) {
+            case "7d" -> 7;
+            case "30d" -> 30;
+            case "90d" -> 90;
+            case "1y" -> 365;
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported period");
+        };
+        if ((startDate == null) != (endDate == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both startDate and endDate are required");
+        }
+
+        LocalDate start = startDate == null ? today.minusDays(periodDays - 1) : parseDate(startDate);
+        LocalDate end = endDate == null ? today : parseDate(endDate);
+        if (start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "startDate must be on or before endDate");
+        }
+        if (category != null && !category.isBlank()
+                && CATEGORIES.stream().noneMatch(option -> option.name().equals(category))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported category");
+        }
+
+        List<SpendingTransaction> current = filterTransactions(start, end, category);
+        long days = ChronoUnit.DAYS.between(start, end) + 1;
+        List<SpendingTransaction> previous = filterTransactions(start.minusDays(days), start.minusDays(1), category);
+        double totalSpent = totalSpent(current);
+
+        return new SpendingSummary(
+                period,
+                totalSpent,
+                current.size(),
+                current.isEmpty() ? 0 : roundCents(totalSpent / current.size()),
+                topCategory(current),
+                new SpendingSummary.ComparedToPrevious(
+                        percentChange(totalSpent, totalSpent(previous)),
+                        percentChange(current.size(), previous.size())
+                )
+        );
+    }
+
+    private void validateCustomer(String customerId) {
+        if (!customerId.equals("12345")) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+    }
+
+    private LocalDate parseDate(String value) {
+        try {
+            return LocalDate.parse(value);
+        } catch (DateTimeParseException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dates must use YYYY-MM-DD format");
+        }
+    }
+
+    private List<SpendingTransaction> filterTransactions(LocalDate start, LocalDate end, String category) {
+        Instant from = start.atStartOfDay(SOUTH_AFRICA).toInstant();
+        Instant until = end.plusDays(1).atStartOfDay(SOUTH_AFRICA).toInstant();
+        return transactions.stream()
+                .filter(transaction -> !transaction.date().isBefore(from) && transaction.date().isBefore(until))
+                .filter(transaction -> category == null || category.isBlank() || transaction.category().equals(category))
+                .toList();
+    }
+
+    private double totalSpent(List<SpendingTransaction> matches) {
+        return matches.stream().mapToLong(transaction -> Math.round(transaction.amount() * 100)).sum() / 100.0;
+    }
+
+    private String topCategory(List<SpendingTransaction> matches) {
+        String top = null;
+        double highest = -1;
+        for (Category category : CATEGORIES) {
+            double amount = totalSpent(matches.stream()
+                    .filter(transaction -> transaction.category().equals(category.name())).toList());
+            if (amount > highest) {
+                highest = amount;
+                top = amount > 0 ? category.name() : top;
+            }
+        }
+        return top;
+    }
+
+    private Double percentChange(double current, double previous) {
+        if (previous > 0) return Math.round((current - previous) / previous * 1_000) / 10.0;
+        return current > 0 ? null : 0.0;
+    }
+
+    private double roundCents(double amount) {
+        return Math.round(amount * 100) / 100.0;
     }
 
     private List<SpendingTransaction> generateTransactions(Instant now) {
