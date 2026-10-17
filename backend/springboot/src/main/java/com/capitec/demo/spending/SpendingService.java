@@ -26,6 +26,12 @@ public class SpendingService {
             new Category("Shopping", "#BB8FCE", "shopping-bag"),
             new Category("Utilities", "#85C1E9", "zap")
     );
+    private static final List<SpendingFilters.DateRangePreset> DATE_RANGE_PRESETS = List.of(
+            new SpendingFilters.DateRangePreset("Last 7 days", "7d"),
+            new SpendingFilters.DateRangePreset("Last 30 days", "30d"),
+            new SpendingFilters.DateRangePreset("Last 90 days", "90d"),
+            new SpendingFilters.DateRangePreset("Last year", "1y")
+    );
     private static final String[][] MERCHANTS = {
             {"Pick n Pay", "Checkers", "Woolworths Food"},
             {"Netflix", "Ster-Kinekor", "Spotify"},
@@ -207,6 +213,14 @@ public class SpendingService {
                 .toList();
 
         return new SpendingGoals(goals);
+    }
+
+    public SpendingFilters getFilters(String customerId) {
+        validateCustomer(customerId);
+        List<SpendingFilters.Category> categories = CATEGORIES.stream()
+                .map(category -> new SpendingFilters.Category(category.name(), category.color(), category.icon()))
+                .toList();
+        return new SpendingFilters(categories, DATE_RANGE_PRESETS);
     }
 
     private int periodDays(String period) {

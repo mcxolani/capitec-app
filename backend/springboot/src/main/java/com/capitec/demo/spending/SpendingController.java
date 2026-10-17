@@ -73,4 +73,9 @@ public class SpendingController {
     ) {
         return spendingService.getGoals(customerId, category);
     }
+
+    @GetMapping("/filters")
+    public SpendingFilters getFilters(@PathVariable String customerId) {
+        return spendingService.getFilters(customerId);
+    }
 }
