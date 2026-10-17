@@ -1,6 +1,7 @@
 .home-page {
   padding-top: 1rem;
 }
+
 .home-page__header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -8,6 +9,7 @@
   gap: 3rem;
   padding: 2rem 0 4.5rem;
 }
+
 .home-page__welcome,
 .home-tool__eyebrow {
   margin: 0 0 1rem;
@@ -16,6 +18,7 @@
   letter-spacing: 0.03em;
   color: var(--color-muted);
 }
+
 .home-page h1 {
   margin: 0;
   color: var(--color-blue-dark);
@@ -24,17 +27,20 @@
   letter-spacing: -0.045em;
   font-weight: 700;
 }
+
 .home-page__intro {
   max-width: 38ch;
   margin: 1.5rem 0 2rem;
   color: var(--color-muted);
   line-height: 1.8;
 }
+
 .home-page__visual {
   overflow: hidden;
   border-radius: 100px 24px 24px 24px;
   background: var(--color-blue);
 }
+
 .home-page__visual img {
   display: block;
   width: 100%;
@@ -42,32 +48,39 @@
   object-fit: cover;
   object-position: 70% center;
 }
+
 .home-page__visual-caption {
   padding: 1.5rem 2rem;
   color: #fff;
   font-size: 1.5rem;
   line-height: 1.3;
 }
+
 .home-page__visual-caption strong {
   font-weight: 700;
 }
+
 .home-page h2 {
   margin: 0;
   font-size: clamp(1.6rem, 3vw, 2rem);
   line-height: 1.25;
   letter-spacing: -0.025em;
 }
+
 .home-page__section-heading {
   margin-bottom: 2rem;
 }
+
 .home-page__tools {
   scroll-margin-top: 2rem;
 }
+
 .home-page__body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
 }
+
 .home-tool.rt-Card {
   padding: 0;
   --card-border-radius: 20px;
@@ -76,14 +89,17 @@
   display: flex;
   flex-direction: column;
 }
+
 .home-tool::after,
 .home-page__branch::after {
   box-shadow: none;
 }
+
 .home-tool--dark.rt-Card {
   --card-background-color: #203642;
   color: #fff;
 }
+
 .home-tool__visual {
   min-height: 150px;
   padding: 2rem;
@@ -92,20 +108,24 @@
   justify-content: space-between;
   gap: 1.5rem;
 }
+
 .home-tool__visual span {
   max-width: 12ch;
   font-size: 1.5rem;
   line-height: 1.25;
   font-weight: 600;
 }
+
 .home-tool__visual--loan {
   background: #e4edf9;
   color: var(--color-blue-dark);
 }
+
 .home-tool__visual--spending {
   background: #d7eef0;
   color: #16505a;
 }
+
 .home-tool__body {
   display: flex;
   flex-direction: column;
@@ -113,24 +133,29 @@
   flex: 1;
   padding: 2rem;
 }
+
 .home-page h3 {
   margin: 0;
   font-size: 1.4rem;
   line-height: 1.35;
   letter-spacing: -0.025em;
 }
+
 .home-tool__body > p:not(.home-tool__eyebrow) {
   margin: 1rem 0 2rem;
   color: var(--color-muted);
   line-height: 1.75;
   font-size: 0.95rem;
 }
+
 .home-tool--dark .home-tool__body > p {
   color: #d1dde2;
 }
+
 .home-tool__body .btn {
   margin-top: auto;
 }
+
 .home-page__branch.rt-Card {
   display: flex;
   align-items: center;
@@ -140,40 +165,49 @@
   --card-background-color: #f4f5f6;
   border-radius: 20px;
 }
+
 .home-page__branch-icon {
   color: var(--color-blue);
 }
+
 .home-page__branch p:not(.home-tool__eyebrow) {
   color: var(--color-muted);
   margin: 0.75rem 0 0;
   font-size: 0.95rem;
 }
+
 .home-page__branch .btn {
   margin-left: auto;
   flex-shrink: 0;
 }
+
 .home-page__disclaimer {
   color: var(--color-muted);
   margin: 1rem 0 0;
   font-size: 0.8rem;
 }
+
 .home-page__questions {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   gap: 3rem;
   padding: 5rem 0;
 }
+
 .home-page__questions > div > p:last-child {
   max-width: 28ch;
   color: var(--color-muted);
   font-size: 0.95rem;
 }
+
 .home-questions__item {
   border-bottom: 1px solid var(--color-border);
 }
+
 .home-questions__heading {
   margin: 0;
 }
+
 .home-questions__trigger {
   display: flex;
   align-items: center;
@@ -189,19 +223,23 @@
   font-weight: 600;
   cursor: pointer;
 }
+
 .home-questions__trigger svg {
   flex-shrink: 0;
   color: var(--color-blue);
 }
+
 .home-questions__trigger[data-state='open'] svg {
   transform: rotate(180deg);
 }
+
 .home-questions__content p {
   margin: 0 0 1.25rem;
   color: var(--color-muted);
   font-size: 0.9rem;
   line-height: 1.8;
 }
+
 .home-page__cta {
   display: flex;
   align-items: center;
@@ -212,39 +250,48 @@
   background: var(--color-blue);
   color: #fff;
 }
+
 .home-page__cta h2 {
   max-width: 25ch;
   font-size: 1.65rem;
 }
+
 .home-page__cta .btn {
   flex-shrink: 0;
 }
+
 @media (max-width: 760px) {
   .home-page__header,
   .home-page__body,
   .home-page__questions {
     grid-template-columns: 1fr;
   }
+
   .home-page__header {
     gap: 2rem;
     padding: 1rem 0 3rem;
   }
+
   .home-page__visual img {
     height: 240px;
   }
+
   .home-page__questions {
     gap: 1rem;
     padding: 3rem 0;
   }
+
   .home-page__branch.rt-Card,
   .home-page__cta {
     align-items: flex-start;
     flex-direction: column;
     padding: 1.5rem;
   }
+
   .home-page__branch .btn {
     margin-left: 0;
   }
+
   .home-tool__body,
   .home-tool__visual {
     padding: 1.5rem;

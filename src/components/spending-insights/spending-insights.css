@@ -2,14 +2,17 @@
   display: grid;
   gap: 1.5rem;
 }
+
 .spending-page > h1 {
   margin-bottom: 0;
 }
+
 .spending-page__intro {
   max-width: 42rem;
   margin: 0;
   color: var(--color-muted);
 }
+
 .spending-panel {
   padding: 1.25rem;
   background: #fff;
@@ -17,19 +20,23 @@
   border-radius: 12px;
   min-width: 0;
 }
+
 .spending-panel h2,
 .spending-section-heading h2 {
   margin: 0;
   font-size: 1.15rem;
 }
+
 .spending-panel > h2 {
   margin-bottom: 1rem;
 }
+
 .spending-muted {
   color: var(--color-muted);
   font-size: 0.875rem;
   line-height: 1.5;
 }
+
 .spending-profile,
 .spending-section-heading {
   display: flex;
@@ -38,12 +45,15 @@
   justify-content: space-between;
   gap: 0.75rem;
 }
+
 .spending-profile p {
   margin: 0.35rem 0 0;
 }
+
 .spending-account {
   text-transform: capitalize;
 }
+
 .spending-demo {
   background: #eef3fc;
   color: var(--color-blue-dark);
@@ -51,10 +61,12 @@
   padding: 0.45rem 0.7rem;
   font-size: 0.85rem;
 }
+
 .spending-controls {
   display: grid;
   gap: 1rem;
 }
+
 .spending-controls__row,
 .spending-presets,
 .spending-date-form {
@@ -63,29 +75,36 @@
   align-items: end;
   gap: 0.75rem;
 }
+
 .spending-controls__row {
   justify-content: space-between;
 }
+
 .spending-presets {
   align-self: end;
 }
+
 .spending-presets .btn[data-state='on'] {
   background: var(--color-blue-dark);
   color: #fff;
 }
+
 .spending-presets .btn[data-state='on']:hover {
   background: #093173;
 }
+
 .spending-field {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   min-width: 0;
 }
+
 .spending-field label {
   font-size: 0.9rem;
   font-weight: 500;
 }
+
 .spending-field select {
   padding: 0.6rem 0.75rem;
   border: 1px solid #c5cad3;
@@ -96,78 +115,97 @@
   min-width: 0;
   max-width: 100%;
 }
+
 .spending-field [aria-invalid='true'] {
   border-color: #b00020;
 }
+
 .spending-date-form .field-error {
   flex-basis: 100%;
 }
+
 .spending-controls__hint {
   margin: 0;
 }
+
 .spending-section-heading {
   margin-bottom: 1rem;
 }
+
 .spending-section-heading p {
   margin: 0;
 }
+
 .spending-summary {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.75rem;
   margin: 0;
 }
+
 .spending-summary .spending-panel {
   padding: 1rem;
 }
+
 .spending-summary dt {
   color: var(--color-muted);
   font-size: 0.85rem;
 }
+
 .spending-summary dd {
   margin: 0.5rem 0 0.35rem;
   font-size: 1.2rem;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+
 .spending-summary .spending-muted {
   font-size: 0.75rem;
 }
+
 .spending-change--up {
   color: #a33020;
 }
+
 .spending-summary dd svg {
   vertical-align: -0.15em;
   margin-right: 0.25rem;
 }
+
 .spending-change--down {
   color: #2e7d32;
 }
+
 .spending-charts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   align-items: start;
 }
+
 .spending-breakdown {
   display: grid;
   gap: 0.5rem;
 }
+
 .spending-donut {
   width: 100%;
   height: 220px;
 }
+
 .spending-donut__amount {
   font-size: 16px;
   font-weight: 600;
   fill: var(--color-ink);
 }
+
 .spending-categories,
 .spending-goals {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
 .spending-categories button {
   width: 100%;
   display: flex;
@@ -185,28 +223,34 @@
   color: var(--color-ink);
   cursor: pointer;
 }
+
 .spending-categories button:hover,
 .spending-categories button[data-state='on'] {
   background: #eef3fc;
 }
+
 .spending-category-name {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   font-size: 0.875rem;
 }
+
 .spending-category-value {
   display: grid;
   text-align: right;
   margin-left: auto;
 }
+
 .spending-category-value strong {
   font-size: 0.9rem;
   font-weight: 600;
 }
+
 .spending-category-value .spending-muted {
   font-size: 0.75rem;
 }
+
 .spending-swatch {
   display: inline-block;
   width: 9px;
@@ -216,15 +260,18 @@
   flex-shrink: 0;
   margin-right: 0.3rem;
 }
+
 .spending-trends {
   width: 100%;
   height: 260px;
 }
+
 .spending-donut .recharts-tooltip-wrapper,
 .spending-trends .recharts-tooltip-wrapper {
   font-size: 0.85rem;
   z-index: 1;
 }
+
 .spending-trends-data__trigger {
   display: flex;
   align-items: center;
@@ -236,17 +283,21 @@
   font-size: 0.9rem;
   padding: 0.5rem 0;
 }
+
 .spending-trends-data__trigger[data-state='open'] svg {
   transform: rotate(180deg);
 }
+
 .spending-table-scroll {
   overflow-x: auto;
 }
+
 .spending-goals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
 }
+
 .spending-goal__heading {
   display: flex;
   flex-wrap: wrap;
@@ -254,25 +305,31 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 .spending-goal h3 {
   margin: 0;
   font-size: 1rem;
 }
+
 .spending-goal p {
   margin: 0.65rem 0 0;
 }
+
 .spending-goal {
   --budget-color: #2e7d32;
   --budget-background: #e8f5e9;
 }
+
 .spending-goal--warning {
   --budget-color: #925700;
   --budget-background: #fff8e1;
 }
+
 .spending-goal--over_budget {
   --budget-color: #b00020;
   --budget-background: #fdecea;
 }
+
 .spending-goal__status {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -280,6 +337,7 @@
   color: var(--budget-color);
   background: var(--budget-background);
 }
+
 .spending-goal__progress {
   display: block;
   width: 100%;
@@ -289,75 +347,87 @@
   overflow: hidden;
   background: #e9ecf1;
 }
+
 .spending-goal__indicator {
   height: 100%;
   background: var(--budget-color);
 }
+
 .spending-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.85rem;
 }
+
 .spending-table th,
 .spending-table td {
   padding: 0.8rem 0.6rem;
   border-bottom: 1px solid var(--color-border);
 }
+
 .spending-table thead th {
   background: #f6f7f9;
   color: var(--color-muted);
   font-weight: 500;
 }
+
 .spending-table tbody th {
   font-weight: 500;
 }
+
 .spending-transactions__merchant span {
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
+
 .spending-transactions__merchant svg {
   flex-shrink: 0;
 }
+
 .spending-transactions__merchant small {
   display: block;
   color: var(--color-muted);
   font-weight: 400;
   margin-top: 0.25rem;
 }
+
 .spending-transactions__amount {
   text-align: right;
   font-weight: 600;
   white-space: nowrap;
 }
+
 .spending-transactions thead th:last-child {
   text-align: right;
 }
+
 .spending-transactions__footer {
   text-align: center;
   margin-top: 1rem;
 }
+
 .spending-page__disclaimer {
   margin: 0;
 }
-.spending-page :is(button, input, select, summary):focus-visible {
-  outline: 3px solid var(--color-blue-dark);
-  outline-offset: 3px;
-}
+
 @media (max-width: 1000px) {
   .spending-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 800px) {
   .spending-charts {
     grid-template-columns: 1fr;
   }
+
   .spending-transactions,
   .spending-transactions tbody {
     display: block;
   }
+
   .spending-transactions thead {
     position: absolute;
     width: 1px;
@@ -365,6 +435,7 @@
     overflow: hidden;
     clip-path: inset(50%);
   }
+
   .spending-transactions tr {
     display: block;
     border: 1px solid var(--color-border);
@@ -372,6 +443,7 @@
     padding: 0.75rem;
     margin-bottom: 0.75rem;
   }
+
   .spending-transactions th,
   .spending-transactions td {
     display: flex;
@@ -381,40 +453,49 @@
     border: 0;
     text-align: right;
   }
+
   .spending-transactions td::before {
     content: attr(data-label);
     color: var(--color-muted);
     font-weight: 400;
     text-align: left;
   }
+
   .spending-transactions td > .spending-swatch {
     display: none;
   }
+
   .spending-transactions .spending-transactions__merchant {
     display: block;
     text-align: left;
     margin-bottom: 0.3rem;
   }
 }
+
 @media (max-width: 600px) {
   .spending-summary,
   .spending-goals {
     grid-template-columns: 1fr;
   }
+
   .spending-panel {
     padding: 1rem;
   }
+
   .spending-presets {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
   }
+
   .spending-controls__row > .spending-field {
     width: 100%;
   }
+
   .spending-date-form > .spending-field {
     flex: 1 1 130px;
   }
+
   .spending-date-form > button {
     flex: 1 1 130px;
   }

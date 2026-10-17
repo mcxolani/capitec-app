@@ -2,6 +2,7 @@
   color: var(--color-muted);
   margin: 0 0 2rem;
 }
+
 .locator__controls {
   display: flex;
   flex-wrap: wrap;
