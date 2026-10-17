@@ -1,3 +1,4 @@
+import * as Collapsible from '@radix-ui/react-collapsible'
 import { useEffect, useRef } from 'react'
 import { formatDistance } from '@/utils/distance'
 import type { BranchWithDistance } from '@/types/branch'
@@ -18,23 +19,24 @@ export default function BranchListItem({ branch, selected, onSelect }: Props) {
   }, [selected])
 
   return (
-    <li ref={ref} className={selected ? 'branch-item branch-item--selected' : 'branch-item'}>
-      <button
-        type="button"
-        className="branch-item__header"
-        aria-expanded={selected}
-        onClick={() => onSelect(selected ? null : branch.id)}
-      >
-        <span className="branch-item__name">{branch.name}</span>
-        <span className="branch-item__distance">{formatDistance(branch.distanceKm)}</span>
-        <span className="branch-item__address">{branch.address}</span>
-      </button>
+    <Collapsible.Root
+      open={selected}
+      onOpenChange={(open) => onSelect(open ? branch.id : null)}
+      asChild
+    >
+      <li ref={ref} className={selected ? 'branch-item branch-item--selected' : 'branch-item'}>
+        <Collapsible.Trigger asChild>
+          <button type="button" className="branch-item__header">
+            <span className="branch-item__name">{branch.name}</span>
+            <span className="branch-item__distance">{formatDistance(branch.distanceKm)}</span>
+            <span className="branch-item__address">{branch.address}</span>
+          </button>
+        </Collapsible.Trigger>
 
-      {selected && (
-        <div className="branch-item__body">
+        <Collapsible.Content className="branch-item__body">
           <BranchInfoCard branch={branch} hideTitle />
-        </div>
-      )}
-    </li>
+        </Collapsible.Content>
+      </li>
+    </Collapsible.Root>
   )
 }

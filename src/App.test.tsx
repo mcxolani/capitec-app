@@ -15,15 +15,28 @@ describe('App routing', () => {
 
   it('renders the home page inside the layout', () => {
     visit('/')
-    expect(screen.getByRole('heading', { name: 'Home Page' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'What would you like to do?' })).toBeInTheDocument()
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Branch Locator' })).toHaveAttribute(
+      'href',
+      '/branch-locator',
+    )
+    expect(screen.getByRole('link', { name: 'Loan Eligibility' })).toHaveAttribute(
+      'href',
+      '/loan-eligibility',
+    )
+    expect(screen.getByRole('link', { name: 'Spending Insights' })).toHaveAttribute(
+      'href',
+      '/spending-insights',
+    )
   })
 
-  it('lazy-loads other pages', async () => {
-    visit('/loan-eligibility')
+  it('opens the loan simulator from the home page', async () => {
+    visit('/')
+    await userEvent.click(screen.getByRole('link', { name: 'Check eligibility' }))
     expect(
-      await screen.findByRole('heading', { name: 'Loan Eligibility Page' }),
+      await screen.findByRole('heading', { name: 'Loan Eligibility Simulator' }),
     ).toBeInTheDocument()
   })
 
@@ -33,6 +46,6 @@ describe('App routing', () => {
 
     await userEvent.click(screen.getByRole('link', { name: 'Go to home' }))
 
-    expect(screen.getByRole('heading', { name: 'Home Page' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'What would you like to do?' })).toBeInTheDocument()
   })
 })

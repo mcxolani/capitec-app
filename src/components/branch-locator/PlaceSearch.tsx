@@ -1,3 +1,4 @@
+import { TextField } from '@radix-ui/themes'
 import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useMapsLibrary } from '@vis.gl/react-google-maps'
@@ -124,7 +125,8 @@ export default function PlaceSearch({ value, onValueChange, onSelect }: Props) {
       <label htmlFor="place-search-input" className="visually-hidden">
         Search for an address
       </label>
-      <input
+      <TextField.Root
+        size="3"
         id="place-search-input"
         ref={inputRef}
         type="text"

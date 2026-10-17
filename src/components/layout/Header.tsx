@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router'
+import { useState } from 'react'
+import { IconButton, Popover } from '@radix-ui/themes'
+import { Menu, X } from 'lucide-react'
+import { Link, NavLink } from 'react-router'
 
 const links = [
   { to: '/', label: 'Home', end: true },
@@ -10,58 +12,58 @@ const links = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    if (!menuOpen) return
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [menuOpen])
+  const navigation = links.map(({ to, label, end }) => (
+    <NavLink
+      key={to}
+      to={to}
+      end={end}
+      onClick={() => setMenuOpen(false)}
+      className={({ isActive }) =>
+        isActive ? 'header__link header__link--active' : 'header__link'
+      }
+    >
+      {label}
+    </NavLink>
+  ))
 
   return (
     <header className="header">
-      <span className="header__brand">
-        <img
-          width={'30px'}
-          src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg"
-          alt=""
-          aria-hidden="true"
-        />
-        Capitec
-      </span>
-      <button
-        type="button"
-        className="header__toggle"
-        aria-expanded={menuOpen}
-        aria-controls="main-nav"
-        onClick={() => setMenuOpen((open) => !open)}
-      >
-        <span className="visually-hidden">{menuOpen ? 'Close menu' : 'Open menu'}</span>
-        <span className="header__toggle-bar" aria-hidden="true" />
-        <span className="header__toggle-bar" aria-hidden="true" />
-        <span className="header__toggle-bar" aria-hidden="true" />
-      </button>
-      <nav
-        id="main-nav"
-        className={menuOpen ? 'header__nav header__nav--open' : 'header__nav'}
-        aria-label="Main"
-      >
-        {links.map(({ to, label, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            onClick={() => setMenuOpen(false)}
-            className={({ isActive }) =>
-              isActive ? 'header__link header__link--active' : 'header__link'
-            }
+      <div className="header__inner">
+        <Link to="/" className="header__brand" aria-label="Capitec home">
+          <img
+            width="30"
+            height="24"
+            src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg"
+            alt=""
+          />
+          Capitec
+        </Link>
+        <nav className="header__nav" aria-label="Main">
+          {navigation}
+        </nav>
+        <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
+          <Popover.Trigger>
+            <IconButton
+              size="3"
+              variant="ghost"
+              className="header__toggle"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </IconButton>
+          </Popover.Trigger>
+          <Popover.Content
+            align="end"
+            sideOffset={12}
+            className="header__menu"
+            aria-label="Navigation menu"
           >
-            {label}
-          </NavLink>
-        ))}
-      </nav>
+            <nav className="header__mobile-nav" aria-label="Mobile">
+              {navigation}
+            </nav>
+          </Popover.Content>
+        </Popover.Root>
+      </div>
     </header>
   )
 }

@@ -1,3 +1,4 @@
+import { Button } from '@radix-ui/themes'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import type { Origin } from '@/types/branch'
 
@@ -15,14 +16,16 @@ export default function UseMyLocation({ onLocated }: Props) {
 
   return (
     <div className="use-my-location">
-      <button
+      <Button
+        size="3"
+        variant="outline"
         type="button"
         className="btn use-my-location__btn"
         onClick={handleClick}
         disabled={loading}
       >
         {loading ? 'Locating…' : 'Use my location'}
-      </button>
+      </Button>
       {error && (
         <p className="field-error" role="alert">
           {error}
