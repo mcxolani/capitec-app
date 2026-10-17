@@ -1,0 +1,81 @@
+package com.capitec.demo.spending;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/customers/{customerId}")
+public class SpendingController {
+    private final SpendingService spendingService;
+
+    public SpendingController(SpendingService spendingService) {
+        this.spendingService = spendingService;
+    }
+
+    @GetMapping("/profile")
+    public CustomerProfile getProfile(@PathVariable String customerId) {
+        return spendingService.getProfile(customerId);
+    }
+
+    @GetMapping("/spending/summary")
+    public SpendingSummary getSummary(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "30d") String period,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getSummary(customerId, period, startDate, endDate, category);
+    }
+
+    @GetMapping("/spending/categories")
+    public SpendingCategories getCategories(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "30d") String period,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getCategories(customerId, period, startDate, endDate, category);
+    }
+
+    @GetMapping("/spending/trends")
+    public SpendingTrends getTrends(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "12") int months,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getTrends(customerId, months, category);
+    }
+
+    @GetMapping("/transactions")
+    public SpendingTransactions getTransactions(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String period,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(defaultValue = "date_desc") String sortBy
+    ) {
+        return spendingService.getTransactions(
+                customerId, limit, offset, category, period, startDate, endDate, sortBy);
+    }
+
+    @GetMapping("/goals")
+    public SpendingGoals getGoals(
+            @PathVariable String customerId,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getGoals(customerId, category);
+    }
+
+    @GetMapping("/filters")
+    public SpendingFilters getFilters(@PathVariable String customerId) {
+        return spendingService.getFilters(customerId);
+    }
+}
