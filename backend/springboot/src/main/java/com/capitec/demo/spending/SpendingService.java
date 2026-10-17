@@ -51,30 +51,12 @@ public class SpendingService {
 
     public SpendingSummary getSummary(String customerId, String period, String startDate, String endDate, String category) {
         validateCustomer(customerId);
-        int periodDays = switch (period) {
-            case "7d" -> 7;
-            case "30d" -> 30;
-            case "90d" -> 90;
-            case "1y" -> 365;
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported period");
-        };
-        if ((startDate == null) != (endDate == null)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both startDate and endDate are required");
-        }
-
-        LocalDate start = startDate == null ? today.minusDays(periodDays - 1) : parseDate(startDate);
-        LocalDate end = endDate == null ? today : parseDate(endDate);
-        if (start.isAfter(end)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "startDate must be on or before endDate");
-        }
-        if (category != null && !category.isBlank()
-                && CATEGORIES.stream().noneMatch(option -> option.name().equals(category))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported category");
-        }
-
-        List<SpendingTransaction> current = filterTransactions(start, end, category);
-        long days = ChronoUnit.DAYS.between(start, end) + 1;
-        List<SpendingTransaction> previous = filterTransactions(start.minusDays(days), start.minusDays(1), category);
+        String selectedCategory = validateCategory(category);
+        SpendingDateRange range = resolveRange(period, startDate, endDate);
+        List<SpendingTransaction> current = filterTransactions(range.startDate(), range.endDate(), selectedCategory);
+        long days = ChronoUnit.DAYS.between(range.startDate(), range.endDate()) + 1;
+        List<SpendingTransaction> previous = filterTransactions(
+                range.startDate().minusDays(days), range.startDate().minusDays(1), selectedCategory);
         double totalSpent = totalSpent(current);
 
         return new SpendingSummary(
@@ -88,6 +70,66 @@ public class SpendingService {
                         percentChange(current.size(), previous.size())
                 )
         );
+    }
+
+    public SpendingCategories getCategories(
+            String customerId, String period, String startDate, String endDate, String category) {
+        validateCustomer(customerId);
+        String selectedCategory = validateCategory(category);
+        SpendingDateRange range = resolveRange(period, startDate, endDate);
+        List<SpendingTransaction> matches = filterTransactions(range.startDate(), range.endDate(), selectedCategory);
+        double totalAmount = totalSpent(matches);
+
+        List<SpendingCategories.Category> categories = CATEGORIES.stream()
+                .map(option -> {
+                    List<SpendingTransaction> categoryMatches = matches.stream()
+                            .filter(transaction -> transaction.category().equals(option.name())).toList();
+                    double amount = totalSpent(categoryMatches);
+                    double percentage = totalAmount == 0 ? 0 : Math.round(amount / totalAmount * 1_000) / 10.0;
+                    return new SpendingCategories.Category(
+                            option.name(), amount, percentage, categoryMatches.size(), option.color(), option.icon());
+                })
+                .filter(option -> option.transactionCount() > 0)
+                .sorted(Comparator.comparingDouble(SpendingCategories.Category::amount).reversed())
+                .toList();
+
+        return new SpendingCategories(
+                new SpendingCategories.DateRange(range.startDate().toString(), range.endDate().toString()),
+                totalAmount,
+                categories
+        );
+    }
+
+    private int periodDays(String period) {
+        return switch (period) {
+            case "7d" -> 7;
+            case "30d" -> 30;
+            case "90d" -> 90;
+            case "1y" -> 365;
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported period");
+        };
+    }
+
+    private SpendingDateRange resolveRange(String period, String startDate, String endDate) {
+        int days = periodDays(period);
+        if ((startDate == null) != (endDate == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both startDate and endDate are required");
+        }
+
+        LocalDate start = startDate == null ? today.minusDays(days - 1) : parseDate(startDate);
+        LocalDate end = endDate == null ? today : parseDate(endDate);
+        if (start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "startDate must be on or before endDate");
+        }
+        return new SpendingDateRange(start, end);
+    }
+
+    private String validateCategory(String category) {
+        if (category == null || category.isBlank()) return null;
+        if (CATEGORIES.stream().noneMatch(option -> option.name().equals(category))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported category");
+        }
+        return category;
     }
 
     private void validateCustomer(String customerId) {
@@ -179,6 +221,8 @@ public class SpendingService {
     }
 
     private record Category(String name, String color, String icon) {}
+
+    private record SpendingDateRange(LocalDate startDate, LocalDate endDate) {}
 
     private record SpendingTransaction(
             String id,
