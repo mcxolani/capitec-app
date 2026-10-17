@@ -2,7 +2,9 @@ package com.capitec.demo.loan;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.capitec.demo.loan.LoanProducts.InterestRateRange;
 import com.capitec.demo.loan.LoanProducts.Product;
@@ -65,5 +67,40 @@ public class LoanService {
 
     public ValidationRules getValidationRules() {
         return VALIDATION_RULES;
+    }
+
+    public RateResponse calculateRate(RateRequest request) {
+        validateRateRequest(request);
+        double interestRate = interestRateFor(request.loanType(), request.creditScore());
+        return LoanCalculator.calculate(request.loanAmount(), interestRate, request.loanTerm());
+    }
+
+    private void validateRateRequest(RateRequest request) {
+        switch (request.loanType()) {
+            case "personal_loan" -> {
+                if (request.loanAmount() > 300_000 || request.loanTerm() > 60) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount or term is outside personal loan limits");
+                }
+            }
+            case "vehicle_loan" -> {
+                if (request.loanAmount() < 50_000 || request.loanTerm() < 12) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount or term is below vehicle loan limits");
+                }
+            }
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported loan type");
+        }
+    }
+
+    private double interestRateFor(String loanType, Integer creditScore) {
+        double personalRate = creditScore == null ? 15.5
+                : creditScore >= 750 ? 10.5
+                : creditScore >= 650 ? 12.5
+                : creditScore >= 550 ? 15.5
+                : 18.5;
+
+        if (loanType.equals("personal_loan")) return personalRate;
+
+        double position = (personalRate - 10.5) / (18.5 - 10.5);
+        return Math.round((8.5 + position * (15 - 8.5)) * 100) / 100.0;
     }
 }
