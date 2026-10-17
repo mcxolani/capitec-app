@@ -181,6 +181,34 @@ public class SpendingService {
         );
     }
 
+    public SpendingGoals getGoals(String customerId, String category) {
+        validateCustomer(customerId);
+        String selectedCategory = validateCategory(category);
+        YearMonth month = YearMonth.from(today);
+        int daysRemaining = month.lengthOfMonth() - today.getDayOfMonth();
+        List<Budget> budgets = List.of(new Budget("Entertainment", 1_000), new Budget("Groceries", 1_500));
+
+        List<SpendingGoals.Goal> goals = budgets.stream()
+                .filter(budget -> selectedCategory == null || budget.category().equals(selectedCategory))
+                .map(budget -> {
+                    double currentSpent = totalSpent(filterTransactions(month.atDay(1), today, budget.category()));
+                    double usage = currentSpent / budget.monthlyBudget();
+                    String status = usage > 1 ? "over_budget" : usage >= 0.8 ? "warning" : "on_track";
+                    return new SpendingGoals.Goal(
+                            "goal_" + budget.category().toLowerCase(),
+                            budget.category(),
+                            budget.monthlyBudget(),
+                            currentSpent,
+                            Math.round(usage * 10_000) / 100.0,
+                            daysRemaining,
+                            status
+                    );
+                })
+                .toList();
+
+        return new SpendingGoals(goals);
+    }
+
     private int periodDays(String period) {
         return switch (period) {
             case "7d" -> 7;
@@ -304,6 +332,8 @@ public class SpendingService {
     private record Category(String name, String color, String icon) {}
 
     private record SpendingDateRange(LocalDate startDate, LocalDate endDate) {}
+
+    private record Budget(String category, double monthlyBudget) {}
 
     private record SpendingTransaction(
             String id,

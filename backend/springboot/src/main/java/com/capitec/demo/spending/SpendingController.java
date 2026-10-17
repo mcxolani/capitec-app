@@ -65,4 +65,12 @@ public class SpendingController {
         return spendingService.getTransactions(
                 customerId, limit, offset, category, period, startDate, endDate, sortBy);
     }
+
+    @GetMapping("/goals")
+    public SpendingGoals getGoals(
+            @PathVariable String customerId,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getGoals(customerId, category);
+    }
 }
