@@ -69,6 +69,13 @@
 .spending-presets {
   align-self: end;
 }
+.spending-presets .btn[data-state='on'] {
+  background: #0b3d91;
+  color: #fff;
+}
+.spending-presets .btn[data-state='on']:hover {
+  background: #093173;
+}
 .spending-field {
   display: flex;
   flex-direction: column;
@@ -148,14 +155,8 @@
   gap: 0.5rem;
 }
 .spending-donut {
-  display: block;
-  width: 200px;
-  max-width: 100%;
-  margin: 0 auto;
-}
-.spending-donut__label {
-  font-size: 12px;
-  fill: #555;
+  width: 100%;
+  height: 220px;
 }
 .spending-donut__amount {
   font-size: 16px;
@@ -186,7 +187,7 @@
   cursor: pointer;
 }
 .spending-categories button:hover,
-.spending-categories button[aria-pressed='true'] {
+.spending-categories button[data-state='on'] {
   background: #eef3fc;
 }
 .spending-category-name {
@@ -217,19 +218,27 @@
   margin-right: 0.3rem;
 }
 .spending-trends {
-  display: block;
   width: 100%;
-  height: auto;
+  height: 260px;
 }
-.spending-trends__label {
-  font-size: 14px;
-  fill: #555;
+.spending-donut .recharts-tooltip-wrapper,
+.spending-trends .recharts-tooltip-wrapper {
+  font-size: 0.85rem;
+  z-index: 1;
 }
-.spending-trends-data summary {
+.spending-trends-data__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  background: none;
   color: #0b3d91;
   cursor: pointer;
   font-size: 0.9rem;
   padding: 0.5rem 0;
+}
+.spending-trends-data__trigger[data-state='open'] svg {
+  transform: rotate(180deg);
 }
 .spending-table-scroll {
   overflow-x: auto;
@@ -272,24 +281,17 @@
   color: var(--budget-color);
   background: var(--budget-background);
 }
-.spending-goal progress {
+.spending-goal__progress {
   display: block;
   width: 100%;
   height: 8px;
   margin-top: 0.85rem;
-  appearance: none;
-  border: 0;
   border-radius: 6px;
   overflow: hidden;
   background: #e9ecf1;
 }
-.spending-goal progress::-webkit-progress-bar {
-  background: #e9ecf1;
-}
-.spending-goal progress::-webkit-progress-value {
-  background: var(--budget-color);
-}
-.spending-goal progress::-moz-progress-bar {
+.spending-goal__indicator {
+  height: 100%;
   background: var(--budget-color);
 }
 .spending-table {
@@ -396,9 +398,6 @@
   }
 }
 @media (max-width: 600px) {
-  .spending-trends__label {
-    font-size: 18px;
-  }
   .spending-summary,
   .spending-goals {
     grid-template-columns: 1fr;

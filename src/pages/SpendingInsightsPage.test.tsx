@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation, useNavigate } from 'react-router'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { spendingApi } from '@/api/spendingApi'
 import SpendingInsightsPage from './SpendingInsightsPage'
 
@@ -34,6 +34,51 @@ function visit(search = '') {
 }
 
 describe('Spending insights page', () => {
+  beforeEach(() => {
+    // jsdom has no layout engine; give the real Recharts components a container size.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(
+      new DOMRect(0, 0, 480, 260),
+    )
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    )
+  })
+
+  it('supports keyboard period selection, category toggles and monthly figures', async () => {
+    const user = userEvent.setup()
+    visit()
+    const currentPeriod = await screen.findByRole('radio', { name: 'Last 30 days' })
+    currentPeriod.focus()
+    await user.keyboard('{ArrowRight}')
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Last 90 days' })).toHaveFocus())
+    await user.keyboard(' ')
+    expect(screen.getByRole('radio', { name: 'Last 90 days' })).toBeChecked()
+
+    const categories = screen.getByRole('region', { name: 'Spending by category' })
+    await user.click(await within(categories).findByRole('radio', { name: /Groceries/ }))
+    expect(screen.getByLabelText('Category')).toHaveValue('Groceries')
+    await user.click(await within(categories).findByRole('radio', { name: /Groceries/ }))
+    expect(screen.getByLabelText('Category')).toHaveValue('')
+
+    const figures = await screen.findByRole('button', { name: 'View monthly figures' })
+    expect(figures).toHaveAttribute('aria-expanded', 'false')
+    await user.click(figures)
+    expect(figures).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('table', { name: 'Monthly spending totals' })).toBeVisible()
+    await user.click(figures)
+    expect(screen.queryByRole('table', { name: 'Monthly spending totals' })).not.toBeInTheDocument()
+
+    expect(screen.getByRole('progressbar', { name: 'Groceries budget used' })).toHaveAttribute(
+      'aria-valuetext',
+      expect.stringContaining('used'),
+    )
+  })
+
   it('reloads only transactions when sorting changes, including back navigation', async () => {
     const user = userEvent.setup()
     const otherRequests = [
@@ -82,7 +127,7 @@ describe('Spending insights page', () => {
     expect(screen.getByLabelText('To')).toHaveValue('')
 
     fireEvent.change(screen.getByLabelText('From'), { target: { value: '2026-09-01' } })
-    await user.click(screen.getByRole('button', { name: 'Last 30 days' }))
+    await user.click(screen.getByRole('radio', { name: 'Last 30 days' }))
     expect(screen.getByLabelText('From')).toHaveValue('')
   })
 
@@ -95,7 +140,7 @@ describe('Spending insights page', () => {
     const transactions = vi.spyOn(spendingApi, 'transactions')
     visit()
     expect(await screen.findByText('John Doe')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Last 90 days' }))
+    await user.click(screen.getByRole('radio', { name: 'Last 90 days' }))
     await user.selectOptions(screen.getByLabelText('Category'), 'Dining')
     await waitFor(() =>
       expect(summary).toHaveBeenLastCalledWith(
@@ -114,8 +159,8 @@ describe('Spending insights page', () => {
     expect(await screen.findByText('No monthly budget set for this category.')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Back' }))
     await waitFor(() => expect(screen.getByLabelText('Category')).toHaveValue(''))
-    expect(screen.getByRole('button', { name: 'Last 90 days' })).toHaveAttribute(
-      'aria-pressed',
+    expect(screen.getByRole('radio', { name: 'Last 90 days' })).toHaveAttribute(
+      'aria-checked',
       'true',
     )
   })
@@ -139,7 +184,7 @@ describe('Spending insights page', () => {
     expect(screen.getByLabelText('Current URL')).toHaveTextContent(
       'startDate=2020-02-01&endDate=2020-02-20',
     )
-    await user.click(screen.getByRole('button', { name: 'Last 7 days' }))
+    await user.click(screen.getByRole('radio', { name: 'Last 7 days' }))
     expect(screen.getByLabelText('From')).toHaveValue('')
     expect(screen.getByLabelText('Current URL')).not.toHaveTextContent('startDate')
   })
@@ -199,8 +244,8 @@ describe('Spending insights page', () => {
     visit('?period=invalid&category=Unknown&startDate=invalid')
     await screen.findByText('John Doe')
     expect(screen.getByRole('alert')).toHaveTextContent('date range in this link is invalid')
-    expect(screen.getByRole('button', { name: 'Last 30 days' })).toHaveAttribute(
-      'aria-pressed',
+    expect(screen.getByRole('radio', { name: 'Last 30 days' })).toHaveAttribute(
+      'aria-checked',
       'true',
     )
     expect(screen.getByLabelText('Category')).toHaveValue('')

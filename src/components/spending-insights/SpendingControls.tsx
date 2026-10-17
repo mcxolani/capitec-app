@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import type { SpendingFilters, SpendingQuery } from '@/types/spending'
 
 export default function SpendingControls({
@@ -43,19 +44,19 @@ export default function SpendingControls({
   return (
     <div className="spending-controls">
       <div className="spending-controls__row">
-        <div className="spending-presets" role="group" aria-label="Spending period">
+        <ToggleGroup.Root
+          type="single"
+          value={query.startDate ? '' : query.period}
+          onValueChange={(period) => selectPeriod(period || query.period || '30d')}
+          className="spending-presets"
+          aria-label="Spending period"
+        >
           {filters.dateRangePresets.map((preset) => (
-            <button
-              key={preset.value}
-              type="button"
-              className={`btn${!query.startDate && query.period === preset.value ? ' btn--primary' : ''}`}
-              aria-pressed={!query.startDate && query.period === preset.value}
-              onClick={() => selectPeriod(preset.value)}
-            >
+            <ToggleGroup.Item key={preset.value} value={preset.value} className="btn">
               {preset.label}
-            </button>
+            </ToggleGroup.Item>
           ))}
-        </div>
+        </ToggleGroup.Root>
         <div className="spending-field">
           <label htmlFor="spending-category">Category</label>
           <select

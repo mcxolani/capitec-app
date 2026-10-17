@@ -1,3 +1,5 @@
+import * as ToggleGroup from '@radix-ui/react-toggle-group'
+import { Label, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import type { SpendingCategories } from '@/types/spending'
 import { formatMoney } from '@/utils/spendingFormat'
 import CategoryIcon from './CategoryIcon'
@@ -13,59 +15,66 @@ export default function CategoryBreakdown({
 }) {
   if (!data.categories.length)
     return <p className="spending-muted">No category spending in this date range.</p>
-  const circumference = 2 * Math.PI * 70
+
+  const chartData = data.categories.map((category) => ({ ...category, fill: category.color }))
+
   return (
     <div className="spending-breakdown">
-      <svg viewBox="0 0 200 200" className="spending-donut" aria-hidden="true">
-        {data.categories.map((category, index) => {
-          const preceding = data.categories
-            .slice(0, index)
-            .reduce((sum, item) => sum + item.amount, 0)
-          return (
-            <circle
-              key={category.name}
-              cx="100"
-              cy="100"
-              r="70"
-              fill="none"
-              stroke={category.color}
-              strokeWidth="24"
-              strokeDasharray={`${(category.amount / data.totalAmount) * circumference} ${circumference}`}
-              strokeDashoffset={(-preceding / data.totalAmount) * circumference}
-              transform="rotate(-90 100 100)"
-            />
-          )
-        })}
-        <text x="100" y="96" textAnchor="middle" className="spending-donut__label">
-          Total spent
-        </text>
-        <text x="100" y="118" textAnchor="middle" className="spending-donut__amount">
-          {formatMoney(data.totalAmount)}
-        </text>
-      </svg>
-      <ul className="spending-categories">
-        {data.categories.map((category) => (
-          <li key={category.name}>
-            <button
-              type="button"
-              aria-pressed={selected === category.name}
-              onClick={() => onSelect(selected === category.name ? undefined : category.name)}
+      <div className="spending-donut">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart accessibilityLayer aria-label="Spending by category">
+            <Pie
+              data={chartData}
+              dataKey="amount"
+              nameKey="name"
+              innerRadius={65}
+              outerRadius={90}
+              startAngle={90}
+              endAngle={-270}
+              cursor="pointer"
+              isAnimationActive={false}
+              onClick={(_, index) =>
+                onSelect(selected === chartData[index].name ? undefined : chartData[index].name)
+              }
             >
-              <span className="spending-category-name">
-                <span className="spending-swatch" style={{ background: category.color }} />
-                <CategoryIcon icon={category.icon} />
-                {category.name}
+              <Label
+                position="center"
+                value={formatMoney(data.totalAmount)}
+                className="spending-donut__amount"
+              />
+            </Pie>
+            <Tooltip
+              formatter={(value) => formatMoney(Number(value))}
+              itemStyle={{ color: '#1a1a1a' }}
+              contentStyle={{ borderColor: '#dde1e8', borderRadius: 8 }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <ToggleGroup.Root
+        type="single"
+        orientation="vertical"
+        value={selected ?? ''}
+        onValueChange={(category) => onSelect(category || undefined)}
+        className="spending-categories"
+        aria-label="Filter by spending category"
+      >
+        {data.categories.map((category) => (
+          <ToggleGroup.Item key={category.name} value={category.name}>
+            <span className="spending-category-name">
+              <span className="spending-swatch" style={{ background: category.color }} />
+              <CategoryIcon icon={category.icon} />
+              {category.name}
+            </span>
+            <span className="spending-category-value">
+              <strong>{formatMoney(category.amount)}</strong>
+              <span className="spending-muted">
+                {category.percentage.toFixed(1)}% · {category.transactionCount} transactions
               </span>
-              <span className="spending-category-value">
-                <strong>{formatMoney(category.amount)}</strong>
-                <span className="spending-muted">
-                  {category.percentage.toFixed(1)}% · {category.transactionCount} transactions
-                </span>
-              </span>
-            </button>
-          </li>
+            </span>
+          </ToggleGroup.Item>
         ))}
-      </ul>
+      </ToggleGroup.Root>
       <p className="spending-muted">Select a category to filter your spending.</p>
     </div>
   )

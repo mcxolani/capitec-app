@@ -8,13 +8,13 @@
 
 Implemented on `customer-spending-insights` using the recommended choices below. The existing loan branch was fast-forwarded into this feature branch to reuse its patterns and styling; `main` was not changed. New spending changes remain uncommitted for review.
 
-The dashboard matches the loan and branch pages: shared layout, buttons and Manrope font, blue controls, white panels, 8px panel corners and the same border colours. Icons use `lucide-react` as requested; charts remain local SVGs.
+The dashboard matches the loan and branch pages: shared layout, buttons and Manrope font, blue controls, white panels, 8px panel corners and the same border colours. Icons use Lucide; charts use Recharts. Radix UI supplies toggle groups, progress bars and the monthly figures disclosure, styled with the existing class names.
 
 The implementation was simplified after review: fewer shared types, inferred API responses, validation at the UI boundary, straightforward async loading, and pagination that stores only the extra transaction rows. Styling and dashboard features remain the same.
 
 All 14 implementation steps below are covered. The mock uses 25 calendar months to provide a complete previous-year comparison. Dates affect summary, categories and transactions; trends retain their monthly window and budgets remain month-to-date. Category filters affect every spending section. Zero-baseline percentage changes and an empty top category are represented as `null`. See the README for these documented API extensions.
 
-Verification: 208 tests passed across 28 files with `npm run test:coverage -- --maxWorkers=2` (the unrestricted run hit worker startup timeouts on this host). Production build, TypeScript and formatting checks passed. Lint has no errors; the generated coverage directory produces three existing unused-directive warnings. Chrome checks covered desktop and mobile layouts, 320px overflow, pagination, category selection and URL persistence after reload. The 24-month chart spaces its labels to remain readable on mobile.
+Verification: 211 tests passed across 28 files with `npm test -- --maxWorkers=2`, including keyboard selection and monthly figures disclosure. Production build, TypeScript and formatting checks passed. Lint has no errors; the generated coverage directory produces three existing unused-directive warnings. Chrome checks covered desktop and mobile layouts, 320px overflow, donut filtering, chart tooltips and the 24-month chart. Earlier checks covered pagination and URL persistence after reload.
 
 ## Before starting
 
@@ -54,7 +54,7 @@ The arithmetic within each response checks out (category amounts add up to the t
 
 ## Decisions implemented
 
-Used generated transactions, the current date, local SVG charts, Lucide icons, fixed percentage budget thresholds, and custom dates overriding presets. The alternatives are retained as planning context.
+Used generated transactions, the current date, Recharts charts, Lucide icons, Radix UI controls, fixed percentage budget thresholds, and custom dates overriding presets.
 
 1. **Mock data source:**
    - _(recommended)_ generate transactions and calculate every endpoint from them;
@@ -62,9 +62,7 @@ Used generated transactions, the current date, local SVG charts, Lucide icons, f
 2. **"Today" for the mock data:**
    - _(recommended)_ relative to the real current date, so the demo always looks current; tests pass in a fixed date;
    - or fixed at the spec's date of 2024-09-16.
-3. **Charts:**
-   - _(recommended)_ hand-built SVG: no dependency, small bundle, and full control over accessibility. A donut and a bar chart are about 100 lines each;
-   - or Recharts: quicker to build, but adds roughly 100 kB gzipped to this page.
+3. **Charts:** Recharts provides the donut, monthly bars, responsive sizing, axes, labels and tooltips. The original hand-written SVG rendering was removed as requested. Charts load with the spending page; the category controls and monthly table remain available as text alternatives.
 4. **Icons:** the spec's names (`shopping-cart`, `film`, `car`, `utensils`, `shopping-bag`, `zap`) are Lucide icon names.
    - use `lucide-react` with direct imports for the six category icons and spending-change arrows, as requested;
    - replaced the original hand-written SVG paths.

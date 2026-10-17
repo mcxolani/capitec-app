@@ -1,3 +1,4 @@
+import * as Progress from '@radix-ui/react-progress'
 import type { SpendingGoals } from '@/types/spending'
 import { formatMoney } from '@/utils/spendingFormat'
 
@@ -22,12 +23,18 @@ export default function BudgetGoals({ data }: { data: SpendingGoals }) {
             <strong>{formatMoney(goal.currentSpent)}</strong>
             <span className="spending-muted"> of {formatMoney(goal.monthlyBudget)}</span>
           </p>
-          <progress
+          <Progress.Root
+            className="spending-goal__progress"
             max={100}
             value={Math.min(100, goal.percentageUsed)}
             aria-label={`${goal.category} budget used`}
-            aria-valuetext={`${goal.percentageUsed.toFixed(1)}% used, ${labels[goal.status]}`}
-          />
+            getValueLabel={() => `${goal.percentageUsed.toFixed(1)}% used, ${labels[goal.status]}`}
+          >
+            <Progress.Indicator
+              className="spending-goal__indicator"
+              style={{ width: `${Math.min(100, goal.percentageUsed)}%` }}
+            />
+          </Progress.Root>
           <p className="spending-muted">
             {goal.percentageUsed.toFixed(1)}% used · {goal.daysRemaining} days remaining
           </p>
