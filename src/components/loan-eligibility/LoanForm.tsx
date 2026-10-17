@@ -132,7 +132,7 @@ export default function LoanForm({ rules, submitting, onSubmit }: Props) {
         {field('monthlyExpenses', 'Monthly expenses (R)', textInput('monthlyExpenses', 'decimal'))}
         {field(
           'existingDebt',
-          'Existing debt repayments (R, optional)',
+          'Existing debt repayments (optional)',
           textInput('existingDebt', 'decimal'),
         )}
         {field('creditScore', 'Credit score (optional)', textInput('creditScore', 'numeric'))}

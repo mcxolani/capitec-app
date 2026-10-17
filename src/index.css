@@ -7,12 +7,21 @@
 body {
   margin: 0;
   font-family:
+    'Manrope Variable',
     system-ui,
     -apple-system,
     'Segoe UI',
     sans-serif;
+  line-height: 1.5;
   color: #1a1a1a;
   background: #f6f7f9;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 .visually-hidden {

@@ -1,0 +1,135 @@
+.home-page {
+  padding: clamp(1.5rem, 5vw, 4rem) 0 2rem;
+}
+
+.home-page__header {
+  margin-bottom: 2.5rem;
+}
+
+.home-page__welcome {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+  color: #0b3d91;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.home-page__welcome::before {
+  content: '';
+  width: 1.5rem;
+  height: 3px;
+  border-radius: 2px;
+  background: #e73343;
+}
+
+.home-page h1 {
+  max-width: 17ch;
+  margin: 0;
+  color: #01236b;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.home-page__intro {
+  margin: 1.25rem 0 0;
+  color: #555;
+  font-size: 1.05rem;
+  text-wrap: balance;
+}
+
+.home-page__body {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.home-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.75rem;
+  border: 1px solid #dde1e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.home-tool:hover {
+  border-color: #0b3d91;
+  background: #fafcff;
+}
+
+.home-tool:focus-visible {
+  outline: 3px solid #0b3d91;
+  outline-offset: 4px;
+}
+
+.home-tool__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  background: #eef3fc;
+  color: #0b3d91;
+}
+
+.home-tool h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.home-tool p {
+  margin: 0 0 1.75rem;
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.home-tool__action {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: auto;
+  color: #0b3d91;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.home-tool:hover .home-tool__action {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-page__disclaimer {
+  margin: 1.5rem 0 0;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 800px) {
+  .home-page__body {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .home-tool {
+    padding: 1.5rem;
+  }
+
+  .home-tool__icon {
+    margin-bottom: 1rem;
+  }
+
+  .home-tool p {
+    margin-bottom: 1.25rem;
+  }
+}

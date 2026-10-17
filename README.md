@@ -1,8 +1,12 @@
 # Capitec App
 
-A React + TypeScript single-page app built with Vite. It includes a branch locator and a loan eligibility simulator; the spending insights page is a placeholder.
+A React + TypeScript single-page app built with Vite. It includes a branch locator, a loan eligibility simulator and a spending insights dashboard.
 
 ## Features
+
+### Home (`/`)
+
+A simple starting page links to the branch finder, loan simulator and spending dashboard. The app uses Manrope throughout, including form controls. Font files are bundled locally through `@fontsource-variable/manrope`.
 
 ### Branch locator (`/branch-locator`)
 
@@ -15,7 +19,7 @@ A React + TypeScript single-page app built with Vite. It includes a branch locat
 
 Customers enter their income, expenses and the loan they want, and get an estimate of whether they'd qualify, what they could borrow and what it would cost.
 
-- The API from the [spec](<docs/LoanEligibilitySimulatorEndpoints%20(2).md>) is mocked in [`src/api/loanApi.ts`](src/api/loanApi.ts): eligibility check, loan products, rate calculator and validation rules, each with a simulated network delay.
+- The API from the [spec](docs/LoanEligibilitySimulatorEndpoints.md) is mocked in [`src/api/loanApi.ts`](src/api/loanApi.ts): eligibility check, loan products, rate calculator and validation rules, each with a simulated network delay.
 - The form validates against the rules the API returns and shows every error at once. Errors and focus are wired up for screen readers.
 - Results come in three forms: eligible, over budget (with the largest affordable amount suggested instead), and declined, each with a plain-language reason.
 - Every result says it's an estimate from simulated data, not a credit decision or loan offer. The approval likelihood is capped at 95%.
@@ -35,9 +39,20 @@ Where the spec's example numbers are inconsistent, the code follows the standard
 - **Monthly payment:** R150,000 at 12.5% over 24 months is R7,096.10 with the standard amortisation formula, not the spec's R7,089.50. The spec's own month 1 interest doesn't match its rate either.
 - **Loan-to-income ratio:** loan ÷ annual income, so 50% for the example. The spec's 60% doesn't follow from any standard definition.
 
-### Coming soon
+### Spending insights (`/spending-insights`)
 
-- Spending insights (`/spending-insights`)
+Explore a fictional customer's spending with summary cards, a category donut, monthly trends, budgets and a sortable transaction list. The dashboard uses the same layout, controls, white panels and responsive styling as the other pages.
+
+- All seven endpoints from the [spec](docs/CustomerSpendingInsightsEndpoints.md) are mocked in [`src/api/spendingApi.ts`](src/api/spendingApi.ts). A seeded generator provides 25 calendar months (about 45 transactions per month) so a full year always has a complete preceding comparison period. Every total comes from that shared dataset, avoiding the contradictory example responses. No customer data is sent to a server.
+- Period, category, custom dates and transaction sort are stored in the URL. Custom dates override the preset; selecting a preset clears the dates. Dates are inclusive in `Africa/Johannesburg`. Invalid URL dates fall back to the selected preset with a visible explanation.
+- Date filters affect the overview, category breakdown and transactions. Trends show 12 months by default, selectable from 6, 12 or 24; budgets always track the current month. Category selection applies to all spending sections. Clicking a category in the breakdown applies that filter.
+- Budgets are on track below 80%, near budget from 80% through 100%, and over budget above 100%. Status labels accompany the colours. A comparison with no previous spending shows an unavailable change instead of an infinite percentage.
+- Transactions load in pages of 20, with four sort orders and mobile cards. Each section has loading, empty and retry states; failed pagination keeps existing transactions visible.
+- Charts use local SVGs with a category list and an expandable monthly data table. Icons use `lucide-react`, with direct imports for the category and spending-change icons. Money includes cents; the existing loan formatter continues to show whole rands.
+
+The mock API uses the browser's current date when the module loads. Tests inject a date and disable the delay with `createSpendingApi(date, 0)`. The mock extends summary/category queries with a category and custom dates, and trends/goals with a category, for coordinated filtering. Comparison percentages and the top category can be `null` when there is no baseline or no spending. These extensions need matching support when replacing the mock with a real backend.
+
+Input validation lives in the filter controls and URL parser. The local mock API trusts those inputs, with only the specified page-size and history limits applied. Shared types describe the data used by components; API return types are inferred.
 
 ## Getting started
 
@@ -87,16 +102,17 @@ Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testi
 
 ```
 src/
-  api/          data fetching (mock branch and loan APIs)
+  api/          mock branch, loan and spending APIs
   components/
     layout/     header with responsive menu, footer, page layout
     branch-locator/
     loan-eligibility/
-  hooks/        useGeolocation, useNearbyBranches, useDebounce
+    spending-insights/
+  hooks/        location, debouncing, spending filters and resource loading
   pages/        one component per route, lazy-loaded except Home
   test/         test setup, fixtures and stubs
   types/        shared TypeScript types
-  utils/        distance, maps, currency, loan calculations, eligibility rules, form validation
+  utils/        distance, maps, loans, spending aggregation and formatting
 ```
 
 Imports use the `@/` alias for `src/` (for example `@/hooks/useGeolocation`).
@@ -155,4 +171,6 @@ I used Claude Code (an AI coding assistant) for:
 - **Fixes:** error message rendered outside the JSX, missing Google Maps types, a distance rounding bug ("1000 m" instead of "1.0 km")
 - **Loan eligibility simulator:** built with Claude Code one small commit at a time, with each commit reviewed before it went in. I made the decisions where the spec was ambiguous or inconsistent: how existing debt affects disposable income, the 80% affordability buffer, and the loan-to-income definition. Claude Code wrote the code and tests and flagged where the spec's numbers didn't add up.
 
-I reviewed every AI-generated change, and all of it passes lint, type checks and tests.
+The earlier Claude Code changes were reviewed before being committed.
+
+Codex implemented the spending insights dashboard, mock API, aggregation utilities, tests and documentation using the plan's recommended defaults, followed by the home page and global font. These changes are available in the working tree for review.
