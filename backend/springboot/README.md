@@ -18,5 +18,6 @@ Use the port you started the app on for these URLs:
 - Loan products: `http://localhost:<port>/api/loans/products`
 - Loan validation rules: `http://localhost:<port>/api/loans/validation-rules`
 - Calculate a loan rate: `POST http://localhost:<port>/api/loans/calculate-rate`
+- Check loan eligibility: `POST http://localhost:<port>/api/loans/eligibility`
 - OpenAPI JSON: `http://localhost:<port>/v3/api-docs`
 - Swagger UI: `http://localhost:<port>/swagger-ui/index.html`

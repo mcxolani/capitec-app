@@ -31,4 +31,9 @@ public class LoanController {
     public RateResponse calculateRate(@Valid @RequestBody RateRequest request) {
         return loanService.calculateRate(request);
     }
+
+    @PostMapping("/eligibility")
+    public EligibilityResponse checkEligibility(@Valid @RequestBody EligibilityRequest request) {
+        return loanService.checkEligibility(request);
+    }
 }
