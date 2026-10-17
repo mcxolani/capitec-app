@@ -15,6 +15,7 @@ mvn -f backend/springboot/pom.xml spring-boot:run -Dspring-boot.run.arguments=--
 Use the port you started the app on for these URLs:
 
 - Branches: `http://localhost:<port>/api/branches`
+- Customer profile: `http://localhost:<port>/api/customers/12345/profile`
 - Loan products: `http://localhost:<port>/api/loans/products`
 - Loan validation rules: `http://localhost:<port>/api/loans/validation-rules`
 - Calculate a loan rate: `POST http://localhost:<port>/api/loans/calculate-rate`
