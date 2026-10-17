@@ -41,4 +41,13 @@ public class SpendingController {
     ) {
         return spendingService.getCategories(customerId, period, startDate, endDate, category);
     }
+
+    @GetMapping("/spending/trends")
+    public SpendingTrends getTrends(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "12") int months,
+            @RequestParam(required = false) String category
+    ) {
+        return spendingService.getTrends(customerId, months, category);
+    }
 }

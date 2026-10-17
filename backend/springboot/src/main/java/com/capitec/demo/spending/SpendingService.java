@@ -100,6 +100,33 @@ public class SpendingService {
         );
     }
 
+    public SpendingTrends getTrends(String customerId, int months, String category) {
+        validateCustomer(customerId);
+        if (months < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "months must be zero or greater");
+        }
+
+        String selectedCategory = validateCategory(category);
+        int count = Math.min(months, 24);
+        YearMonth currentMonth = YearMonth.from(today);
+        List<SpendingTrends.MonthTrend> trends = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            YearMonth month = currentMonth.minusMonths(count - i - 1L);
+            List<SpendingTransaction> matches = filterTransactions(
+                    month.atDay(1), month.atEndOfMonth(), selectedCategory);
+            double totalSpent = totalSpent(matches);
+            trends.add(new SpendingTrends.MonthTrend(
+                    month.toString(),
+                    totalSpent,
+                    matches.size(),
+                    matches.isEmpty() ? 0 : roundCents(totalSpent / matches.size())
+            ));
+        }
+
+        return new SpendingTrends(trends);
+    }
+
     private int periodDays(String period) {
         return switch (period) {
             case "7d" -> 7;
