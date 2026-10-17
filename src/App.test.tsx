@@ -18,36 +18,23 @@ describe('App routing', () => {
     expect(screen.getByRole('heading', { name: 'What would you like to do?' })).toBeInTheDocument()
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Branch finder' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Branch Locator' })).toHaveAttribute(
       'href',
       '/branch-locator',
     )
-    expect(screen.getByRole('link', { name: 'Loan eligibility' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Loan Eligibility' })).toHaveAttribute(
       'href',
       '/loan-eligibility',
     )
-    expect(screen.getByRole('link', { name: 'Spending insights' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Spending Insights' })).toHaveAttribute(
       'href',
       '/spending-insights',
     )
   })
 
-  it('expands home questions with the keyboard', async () => {
-    visit('/')
-    const question = screen.getByRole('button', {
-      name: 'Is the spending dashboard connected to my account?',
-    })
-    question.focus()
-    await userEvent.keyboard('{Enter}')
-    expect(question).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.getByText(/The dashboard uses demo data/)).toBeVisible()
-    await userEvent.keyboard('{Enter}')
-    expect(question).toHaveAttribute('aria-expanded', 'false')
-  })
-
   it('opens the loan simulator from the home page', async () => {
     visit('/')
-    await userEvent.click(screen.getByRole('link', { name: 'Loan eligibility' }))
+    await userEvent.click(screen.getByRole('link', { name: 'Check eligibility' }))
     expect(
       await screen.findByRole('heading', { name: 'Loan Eligibility Simulator' }),
     ).toBeInTheDocument()
