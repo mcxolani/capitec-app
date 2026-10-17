@@ -1,3 +1,4 @@
+import { Button, TextField } from '@radix-ui/themes'
 import { useRef, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import type {
@@ -67,7 +68,8 @@ export default function LoanForm({ rules, submitting, onSubmit }: Props) {
   )
 
   const textInput = (name: FieldName, inputMode: 'numeric' | 'decimal') => (
-    <input
+    <TextField.Root
+      size="3"
       {...control(name)}
       type="text"
       inputMode={inputMode}
@@ -152,9 +154,15 @@ export default function LoanForm({ rules, submitting, onSubmit }: Props) {
         )}
       </fieldset>
 
-      <button type="submit" className="btn btn--primary loan-form__submit" disabled={submitting}>
+      <Button
+        size="3"
+        variant="solid"
+        type="submit"
+        className="btn btn--primary loan-form__submit"
+        disabled={submitting}
+      >
         {submitting ? 'Checking…' : 'Check eligibility'}
-      </button>
+      </Button>
     </form>
   )
 }

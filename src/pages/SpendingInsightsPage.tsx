@@ -1,3 +1,4 @@
+import { Badge, Card } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import { spendingApi } from '@/api/spendingApi'
 import BudgetGoals from '@/components/spending-insights/BudgetGoals'
@@ -33,41 +34,47 @@ export default function SpendingInsightsPage() {
     <section className="spending-page">
       <h1>Spending Insights</h1>
       <p className="spending-page__intro">Keep track of your spending and monthly budgets.</p>
-      <section className="spending-panel spending-profile" aria-label="Customer profile">
-        <ResourcePanel resource={profile}>
-          {(customer) => (
-            <>
-              <div>
-                <h2>{customer.name}</h2>
-                <p className="spending-muted">
-                  <span className="spending-account">{customer.accountType}</span> account · Member
-                  since {formatDate(customer.joinDate)}
-                </p>
-              </div>
-              <span className="spending-demo">Demo account</span>
-            </>
-          )}
-        </ResourcePanel>
-      </section>
+      <Card asChild>
+        <section className="spending-panel spending-profile" aria-label="Customer profile">
+          <ResourcePanel resource={profile}>
+            {(customer) => (
+              <>
+                <div>
+                  <h2>{customer.name}</h2>
+                  <p className="spending-muted">
+                    <span className="spending-account">{customer.accountType}</span> account ·
+                    Member since {formatDate(customer.joinDate)}
+                  </p>
+                </div>
+                <Badge size="2" className="spending-demo">
+                  Demo account
+                </Badge>
+              </>
+            )}
+          </ResourcePanel>
+        </section>
+      </Card>
 
-      <section className="spending-panel" aria-label="Spending filters">
-        <ResourcePanel resource={filters}>
-          {(data) => (
-            <SpendingControls
-              key={`${query.period}-${query.startDate}-${query.endDate}`}
-              filters={data}
-              query={query}
-              update={update}
-            />
+      <Card asChild>
+        <section className="spending-panel" aria-label="Spending filters">
+          <ResourcePanel resource={filters}>
+            {(data) => (
+              <SpendingControls
+                key={`${query.period}-${query.startDate}-${query.endDate}`}
+                filters={data}
+                query={query}
+                update={update}
+              />
+            )}
+          </ResourcePanel>
+          {invalidRange && (
+            <p role="alert" className="field-error">
+              The date range in this link is invalid. Showing the selected preset instead. Choose
+              both dates to apply a custom range.
+            </p>
           )}
-        </ResourcePanel>
-        {invalidRange && (
-          <p role="alert" className="field-error">
-            The date range in this link is invalid. Showing the selected preset instead. Choose both
-            dates to apply a custom range.
-          </p>
-        )}
-      </section>
+        </section>
+      </Card>
 
       <section aria-labelledby="spending-overview-heading">
         <div className="spending-section-heading">
@@ -83,56 +90,66 @@ export default function SpendingInsightsPage() {
       </section>
 
       <div className="spending-charts">
-        <section className="spending-panel" aria-labelledby="categories-heading">
-          <h2 id="categories-heading">Spending by category</h2>
-          <ResourcePanel resource={categories}>
-            {(data) => (
-              <CategoryBreakdown
-                data={data}
-                selected={query.category}
-                onSelect={(category) => update({ category })}
-              />
-            )}
-          </ResourcePanel>
-        </section>
-        <section className="spending-panel" aria-labelledby="trends-heading">
-          <div className="spending-section-heading">
-            <h2 id="trends-heading">Monthly trends</h2>
-            <div className="spending-field">
-              <label htmlFor="trend-months" className="visually-hidden">
-                Months of history
-              </label>
-              <select
-                id="trend-months"
-                value={months}
-                onChange={(event) => setMonths(Number(event.target.value))}
-              >
-                <option value={6}>6 months</option>
-                <option value={12}>12 months</option>
-                <option value={24}>24 months</option>
-              </select>
+        <Card asChild>
+          <section className="spending-panel" aria-labelledby="categories-heading">
+            <h2 id="categories-heading">Spending by category</h2>
+            <ResourcePanel resource={categories}>
+              {(data) => (
+                <CategoryBreakdown
+                  data={data}
+                  selected={query.category}
+                  onSelect={(category) => update({ category })}
+                />
+              )}
+            </ResourcePanel>
+          </section>
+        </Card>
+        <Card asChild>
+          <section className="spending-panel" aria-labelledby="trends-heading">
+            <div className="spending-section-heading">
+              <h2 id="trends-heading">Monthly trends</h2>
+              <div className="spending-field">
+                <label htmlFor="trend-months" className="visually-hidden">
+                  Months of history
+                </label>
+                <select
+                  id="trend-months"
+                  value={months}
+                  onChange={(event) => setMonths(Number(event.target.value))}
+                >
+                  <option value={6}>6 months</option>
+                  <option value={12}>12 months</option>
+                  <option value={24}>24 months</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <ResourcePanel resource={trends}>{(data) => <MonthlyTrends data={data} />}</ResourcePanel>
-        </section>
+            <ResourcePanel resource={trends}>
+              {(data) => <MonthlyTrends data={data} />}
+            </ResourcePanel>
+          </section>
+        </Card>
       </div>
 
-      <section className="spending-panel" aria-labelledby="budgets-heading">
-        <div className="spending-section-heading">
-          <h2 id="budgets-heading">Monthly budgets</h2>
-          <p className="spending-muted">This month</p>
-        </div>
-        <ResourcePanel resource={goals}>{(data) => <BudgetGoals data={data} />}</ResourcePanel>
-      </section>
+      <Card asChild>
+        <section className="spending-panel" aria-labelledby="budgets-heading">
+          <div className="spending-section-heading">
+            <h2 id="budgets-heading">Monthly budgets</h2>
+            <p className="spending-muted">This month</p>
+          </div>
+          <ResourcePanel resource={goals}>{(data) => <BudgetGoals data={data} />}</ResourcePanel>
+        </section>
+      </Card>
 
-      <section className="spending-panel" aria-labelledby="transactions-heading">
-        <TransactionsList
-          key={`${JSON.stringify(query)}-${sortBy}`}
-          query={query}
-          sortBy={sortBy}
-          onSort={(sort) => update({ sortBy: sort })}
-        />
-      </section>
+      <Card asChild>
+        <section className="spending-panel" aria-labelledby="transactions-heading">
+          <TransactionsList
+            key={`${JSON.stringify(query)}-${sortBy}`}
+            query={query}
+            sortBy={sortBy}
+            onSort={(sort) => update({ sortBy: sort })}
+          />
+        </section>
+      </Card>
       <p className="spending-muted spending-page__disclaimer">
         Demo data. Amounts in rands, dates in South African time.
       </p>

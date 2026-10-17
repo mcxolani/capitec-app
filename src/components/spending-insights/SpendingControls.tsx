@@ -1,3 +1,4 @@
+import { Button, TextField } from '@radix-ui/themes'
 import { useState, type FormEvent } from 'react'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import type { SpendingFilters, SpendingQuery } from '@/types/spending'
@@ -74,7 +75,8 @@ export default function SpendingControls({
       <form className="spending-date-form" noValidate onSubmit={handleSubmit}>
         <div className="spending-field">
           <label htmlFor="spending-start">From</label>
-          <input
+          <TextField.Root
+            size="3"
             id="spending-start"
             type="date"
             value={startDate}
@@ -85,7 +87,8 @@ export default function SpendingControls({
         </div>
         <div className="spending-field">
           <label htmlFor="spending-end">To</label>
-          <input
+          <TextField.Root
+            size="3"
             id="spending-end"
             type="date"
             value={endDate}
@@ -94,13 +97,13 @@ export default function SpendingControls({
             onChange={(event) => setEndDate(event.target.value)}
           />
         </div>
-        <button type="submit" className="btn">
+        <Button size="3" variant="outline" type="submit" className="btn">
           Apply dates
-        </button>
+        </Button>
         {(query.category || query.startDate || query.period !== '30d') && (
-          <button type="button" className="btn" onClick={resetFilters}>
+          <Button size="3" variant="outline" type="button" className="btn" onClick={resetFilters}>
             Reset filters
-          </button>
+          </Button>
         )}
         {error && (
           <p className="field-error" id="spending-date-error" role="alert">

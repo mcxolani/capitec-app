@@ -1,3 +1,5 @@
+import { Callout } from '@radix-ui/themes'
+import { Info } from 'lucide-react'
 import { useState } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps'
 import BranchList from '@/components/branch-locator/BranchList'
@@ -28,17 +30,25 @@ export default function BranchLocatorPage() {
 
   if (!API_KEY) {
     return (
-      <p role="alert">
-        {import.meta.env.DEV
-          ? 'Missing VITE_GOOGLE_MAPS_API_KEY. Add it to .env.local and restart.'
-          : 'The branch locator is unavailable right now. Please try again later.'}
-      </p>
+      <Callout.Root role="alert">
+        <Callout.Icon>
+          <Info size={18} />
+        </Callout.Icon>
+        <Callout.Text>
+          {import.meta.env.DEV
+            ? 'Missing VITE_GOOGLE_MAPS_API_KEY. Add it to .env.local and restart.'
+            : 'The branch locator is unavailable right now. Please try again later.'}
+        </Callout.Text>
+      </Callout.Root>
     )
   }
 
   return (
     <section className="locator">
       <h1>Branch Locator</h1>
+      <p className="locator__intro">
+        Find a branch nearby, check opening hours and plan your visit.
+      </p>
       <APIProvider apiKey={API_KEY}>
         <div className="locator__controls">
           <PlaceSearch value={query} onValueChange={setQuery} onSelect={handleOrigin} />
@@ -46,7 +56,11 @@ export default function BranchLocatorPage() {
           <RadiusSelect value={radiusKm} onChange={setRadiusKm} />
         </div>
 
-        {error && <p role="alert">{error}</p>}
+        {error && (
+          <Callout.Root color="red" role="alert">
+            <Callout.Text>{error}</Callout.Text>
+          </Callout.Root>
+        )}
 
         <div className="locator__body">
           <BranchList

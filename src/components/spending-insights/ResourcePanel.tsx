@@ -1,3 +1,4 @@
+import { Button, Callout, Spinner } from '@radix-ui/themes'
 import type { ReactNode } from 'react'
 
 export default function ResourcePanel<T>({
@@ -10,17 +11,17 @@ export default function ResourcePanel<T>({
   if (resource.loading)
     return (
       <p className="spending-muted" role="status">
-        Loading…
+        <Spinner /> Loading…
       </p>
     )
   if (resource.error)
     return (
-      <div role="alert">
-        <p>{resource.error}</p>
-        <button className="btn" type="button" onClick={resource.retry}>
+      <Callout.Root color="red" role="alert">
+        <Callout.Text>{resource.error}</Callout.Text>
+        <Button size="3" variant="outline" className="btn" type="button" onClick={resource.retry}>
           Try again
-        </button>
-      </div>
+        </Button>
+      </Callout.Root>
     )
   return resource.data === undefined ? <p>No data available.</p> : children(resource.data)
 }

@@ -1,3 +1,4 @@
+import { Card } from '@radix-ui/themes'
 import type { Ref } from 'react'
 import type { AffordabilityScore, EligibilityResponse, RiskCategory } from '@/types/loan'
 import { formatRand } from '@/utils/currency'
@@ -42,7 +43,7 @@ export default function LoanResult({ result, loanTerm, headingRef }: Props) {
       </div>
 
       {recommendedAmount > 0 && (
-        <div className="loan-result__panel">
+        <Card className="loan-result__panel">
           <h3>{isEligible ? 'Your loan' : 'Suggested loan'}</h3>
           <dl className="loan-result__figures">
             <div>
@@ -70,10 +71,10 @@ export default function LoanResult({ result, loanTerm, headingRef }: Props) {
               <dd>{formatRand(recommendedLoan.maxAmount)}</dd>
             </div>
           </dl>
-        </div>
+        </Card>
       )}
 
-      <div className="loan-result__panel">
+      <Card className="loan-result__panel">
         <h3>Affordability</h3>
         <dl className="loan-result__figures">
           <div>
@@ -101,7 +102,7 @@ export default function LoanResult({ result, loanTerm, headingRef }: Props) {
             <dd>{eligibilityResult.approvalLikelihood}%</dd>
           </div>
         </dl>
-      </div>
+      </Card>
 
       <p className="loan-result__disclaimer">
         This is an estimate based on simulated data, not a credit decision or a loan offer. A real

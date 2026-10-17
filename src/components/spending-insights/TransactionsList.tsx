@@ -1,3 +1,4 @@
+import { Button } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import { spendingApi } from '@/api/spendingApi'
 import { useSpendingResource } from '@/hooks/useSpendingResource'
@@ -114,9 +115,16 @@ export default function TransactionsList({
                   </p>
                 )}
                 {rows.length < total && (
-                  <button type="button" className="btn" disabled={loadingMore} onClick={loadMore}>
+                  <Button
+                    size="3"
+                    variant="outline"
+                    type="button"
+                    className="btn"
+                    disabled={loadingMore}
+                    onClick={loadMore}
+                  >
                     {loadingMore ? 'Loading more…' : error ? 'Try loading more again' : 'Load more'}
-                  </button>
+                  </Button>
                 )}
               </div>
             </>

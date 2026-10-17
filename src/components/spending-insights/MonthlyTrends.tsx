@@ -46,7 +46,7 @@ export default function MonthlyTrends({ data }: { data: SpendingTrends }) {
             <Bar
               dataKey="totalSpent"
               name="Spent"
-              fill="#0b3d91"
+              fill="var(--color-blue)"
               radius={[3, 3, 0, 0]}
               maxBarSize={36}
               isAnimationActive={false}

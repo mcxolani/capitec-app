@@ -8,13 +8,13 @@
 .spending-page__intro {
   max-width: 42rem;
   margin: 0;
-  color: #444;
+  color: var(--color-muted);
 }
 .spending-panel {
   padding: 1.25rem;
   background: #fff;
-  border: 1px solid #dde1e8;
-  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
   min-width: 0;
 }
 .spending-panel h2,
@@ -26,7 +26,7 @@
   margin-bottom: 1rem;
 }
 .spending-muted {
-  color: #555;
+  color: var(--color-muted);
   font-size: 0.875rem;
   line-height: 1.5;
 }
@@ -46,7 +46,7 @@
 }
 .spending-demo {
   background: #eef3fc;
-  color: #0b3d91;
+  color: var(--color-blue-dark);
   border-radius: 6px;
   padding: 0.45rem 0.7rem;
   font-size: 0.85rem;
@@ -70,7 +70,7 @@
   align-self: end;
 }
 .spending-presets .btn[data-state='on'] {
-  background: #0b3d91;
+  background: var(--color-blue-dark);
   color: #fff;
 }
 .spending-presets .btn[data-state='on']:hover {
@@ -86,14 +86,13 @@
   font-size: 0.9rem;
   font-weight: 500;
 }
-.spending-field input,
 .spending-field select {
   padding: 0.6rem 0.75rem;
   border: 1px solid #c5cad3;
   border-radius: 6px;
   font: inherit;
   background: #fff;
-  color: #1a1a1a;
+  color: var(--color-ink);
   min-width: 0;
   max-width: 100%;
 }
@@ -122,7 +121,7 @@
   padding: 1rem;
 }
 .spending-summary dt {
-  color: #555;
+  color: var(--color-muted);
   font-size: 0.85rem;
 }
 .spending-summary dd {
@@ -161,7 +160,7 @@
 .spending-donut__amount {
   font-size: 16px;
   font-weight: 600;
-  fill: #1a1a1a;
+  fill: var(--color-ink);
 }
 .spending-categories,
 .spending-goals {
@@ -177,13 +176,13 @@
   align-items: center;
   gap: 0.4rem;
   border: 0;
-  border-bottom: 1px solid #dde1e8;
+  border-bottom: 1px solid var(--color-border);
   border-radius: 4px;
   background: #fff;
   padding: 0.7rem 0.3rem;
   font: inherit;
   text-align: left;
-  color: #1a1a1a;
+  color: var(--color-ink);
   cursor: pointer;
 }
 .spending-categories button:hover,
@@ -232,7 +231,7 @@
   gap: 0.5rem;
   border: 0;
   background: none;
-  color: #0b3d91;
+  color: var(--color-blue-dark);
   cursor: pointer;
   font-size: 0.9rem;
   padding: 0.5rem 0;
@@ -303,11 +302,11 @@
 .spending-table th,
 .spending-table td {
   padding: 0.8rem 0.6rem;
-  border-bottom: 1px solid #dde1e8;
+  border-bottom: 1px solid var(--color-border);
 }
 .spending-table thead th {
   background: #f6f7f9;
-  color: #555;
+  color: var(--color-muted);
   font-weight: 500;
 }
 .spending-table tbody th {
@@ -323,7 +322,7 @@
 }
 .spending-transactions__merchant small {
   display: block;
-  color: #555;
+  color: var(--color-muted);
   font-weight: 400;
   margin-top: 0.25rem;
 }
@@ -343,7 +342,7 @@
   margin: 0;
 }
 .spending-page :is(button, input, select, summary):focus-visible {
-  outline: 3px solid #0b3d91;
+  outline: 3px solid var(--color-blue-dark);
   outline-offset: 3px;
 }
 @media (max-width: 1000px) {
@@ -368,8 +367,8 @@
   }
   .spending-transactions tr {
     display: block;
-    border: 1px solid #dde1e8;
-    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
     padding: 0.75rem;
     margin-bottom: 0.75rem;
   }
@@ -384,7 +383,7 @@
   }
   .spending-transactions td::before {
     content: attr(data-label);
-    color: #555;
+    color: var(--color-muted);
     font-weight: 400;
     text-align: left;
   }

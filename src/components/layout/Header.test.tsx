@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
@@ -38,7 +38,7 @@ describe('Header', () => {
     await userEvent.click(toggle())
     expect(toggle()).toHaveAttribute('aria-expanded', 'true')
     expect(toggle()).toHaveAccessibleName('Close menu')
-    expect(screen.getByRole('navigation')).toHaveClass('header__nav--open')
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).toBeVisible()
 
     await userEvent.click(toggle())
     expect(toggle()).toHaveAttribute('aria-expanded', 'false')
@@ -51,13 +51,18 @@ describe('Header', () => {
     await userEvent.keyboard('{Escape}')
 
     expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle()).toHaveFocus()
   })
 
   it('closes the menu after following a link', async () => {
     renderHeader()
     await userEvent.click(toggle())
 
-    await userEvent.click(screen.getByRole('link', { name: 'Loan Eligibility' }))
+    await userEvent.click(
+      within(screen.getByRole('navigation', { name: 'Mobile' })).getByRole('link', {
+        name: 'Loan Eligibility',
+      }),
+    )
 
     expect(toggle()).toHaveAttribute('aria-expanded', 'false')
     expect(screen.getByRole('link', { name: 'Loan Eligibility' })).toHaveClass(

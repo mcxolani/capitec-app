@@ -6,7 +6,11 @@ A React + TypeScript single-page app built with Vite. It includes a branch locat
 
 ### Home (`/`)
 
-A simple starting page links to the branch finder, loan simulator and spending dashboard. The app uses Manrope throughout, including form controls. Font files are bundled locally through `@fontsource-variable/manrope`.
+The home page takes its visual direction from [Capitec’s website](https://www.capitecbank.co.za/): an open hero, rounded feature panels, pill-shaped actions and a blue call-to-action strip. Its content stays focused on the branch finder, loan simulator and spending dashboard, with a short FAQ. The app uses Manrope throughout, including form controls. Font files are bundled locally through `@fontsource-variable/manrope`.
+
+Radix Themes provides buttons, text/date inputs, cards, callouts, loading indicators and badges across the pages. Radix also handles the mobile navigation popover, home FAQ and branch disclosures. Existing page class names style the components, with shared colors and typography in `src/index.css`. Recharts and Lucide remain the chart and icon libraries.
+
+The home photograph is bundled at `public/images/banking-tools.webp`, sourced from [Capitec’s fee-calculator image](https://www.capitecbank.co.za/globalassets/fee_calculator_desktop.jpg).
 
 ### Branch locator (`/branch-locator`)
 

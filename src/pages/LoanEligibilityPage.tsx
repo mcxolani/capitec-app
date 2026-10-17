@@ -1,3 +1,4 @@
+import { Button, Callout, Spinner } from '@radix-ui/themes'
 import { useEffect, useRef, useState } from 'react'
 import { checkEligibility, fetchValidationRules } from '@/api/loanApi'
 import LoanForm from '@/components/loan-eligibility/LoanForm'
@@ -62,14 +63,18 @@ export default function LoanEligibilityPage() {
       </p>
 
       {rulesError ? (
-        <div role="alert" className="loan-page__message">
-          <p>The simulator couldn’t load. Check your connection and try again.</p>
-          <button type="button" className="btn" onClick={retryRules}>
+        <Callout.Root color="red" role="alert" className="loan-page__message">
+          <Callout.Text>
+            The simulator couldn’t load. Check your connection and try again.
+          </Callout.Text>
+          <Button size="3" variant="outline" type="button" className="btn" onClick={retryRules}>
             Try again
-          </button>
-        </div>
+          </Button>
+        </Callout.Root>
       ) : !rules ? (
-        <p className="loan-page__message">Loading…</p>
+        <p className="loan-page__message" role="status">
+          <Spinner /> Loading…
+        </p>
       ) : (
         <div className="loan-page__body">
           <div>

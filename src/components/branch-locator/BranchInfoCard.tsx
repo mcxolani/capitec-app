@@ -1,3 +1,4 @@
+import { Button } from '@radix-ui/themes'
 import { formatDistance } from '@/utils/distance'
 import type { BranchWithDistance } from '@/types/branch'
 import { directionsUrl } from '@/utils/maps'
@@ -31,14 +32,11 @@ export default function BranchInfoCard({ branch, hideTitle = false }: Props) {
         )}
       </dl>
 
-      <a
-        className="btn btn--primary"
-        href={directionsUrl(branch.position)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Navigate
-      </a>
+      <Button asChild size="3" className="btn btn--primary">
+        <a href={directionsUrl(branch.position)} target="_blank" rel="noopener noreferrer">
+          Navigate
+        </a>
+      </Button>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { Card } from '@radix-ui/themes'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import type { SpendingSummary } from '@/types/spending'
 import { formatMoney, formatPercentage } from '@/utils/spendingFormat'
@@ -12,11 +13,11 @@ export default function SummaryCards({ summary }: { summary: SpendingSummary }) 
         </p>
       )}
       <dl className="spending-summary">
-        <div className="spending-panel">
+        <Card className="spending-panel">
           <dt>Total spent</dt>
           <dd>{formatMoney(summary.totalSpent)}</dd>
-        </div>
-        <div className="spending-panel">
+        </Card>
+        <Card className="spending-panel">
           <dt>Transactions</dt>
           <dd>{summary.transactionCount}</dd>
           <span className="spending-muted">
@@ -24,16 +25,16 @@ export default function SummaryCards({ summary }: { summary: SpendingSummary }) 
               ? 'No previous transactions'
               : `${formatPercentage(summary.comparedToPrevious.transactionChange)} vs previous period`}
           </span>
-        </div>
-        <div className="spending-panel">
+        </Card>
+        <Card className="spending-panel">
           <dt>Average transaction</dt>
           <dd>{formatMoney(summary.averageTransaction)}</dd>
-        </div>
-        <div className="spending-panel">
+        </Card>
+        <Card className="spending-panel">
           <dt>Top category</dt>
           <dd>{summary.topCategory ?? '—'}</dd>
-        </div>
-        <div className="spending-panel">
+        </Card>
+        <Card className="spending-panel">
           <dt>Spending change</dt>
           <dd
             className={
@@ -51,7 +52,7 @@ export default function SummaryCards({ summary }: { summary: SpendingSummary }) 
           <span className="spending-muted">
             {change === null ? 'No previous spending' : 'vs previous period'}
           </span>
-        </div>
+        </Card>
       </dl>
     </>
   )
