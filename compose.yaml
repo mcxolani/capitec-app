@@ -1,5 +1,13 @@
 # Usage: docker compose --env-file .env.local up --build
 services:
+  api:
+    build:
+      context: ./backend/springboot
+    image: capitec-api
+    ports:
+      - '${API_PORT:-8081}:8081'
+    restart: unless-stopped
+
   web:
     build:
       context: .
@@ -9,4 +17,7 @@ services:
     image: capitec-app
     ports:
       - '${PORT:-8080}:8080'
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped

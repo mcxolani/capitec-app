@@ -1,4 +1,14 @@
-import type { SpendingQuery, TransactionQuery } from '@/types/spending'
+import type {
+  SpendingCategories,
+  SpendingFilters,
+  SpendingGoals,
+  SpendingProfile,
+  SpendingQuery,
+  SpendingSummary,
+  SpendingTrends,
+  SpendingTransactions,
+  TransactionQuery,
+} from '@/types/spending'
 import {
   budgetStatus,
   categoryBreakdown,
@@ -10,6 +20,7 @@ import {
 import { saDate } from '@/utils/spendingFormat'
 import { generateTransactions } from './spendingData'
 import { spendingFilters } from '@/constants/spending'
+import { requestJson } from './request'
 
 // All seven mock endpoints share the same snapshot. Inject a clock and zero delay in tests.
 export function createSpendingApi(now = new Date(), delay = 250) {
@@ -134,4 +145,62 @@ export function createSpendingApi(now = new Date(), delay = 250) {
   }
 }
 
-export const spendingApi = createSpendingApi()
+function customerUrl(endpoint: string, query: TransactionQuery): string {
+  const params = new URLSearchParams()
+  if (query.period) params.set('period', query.period)
+  if (query.startDate) params.set('startDate', query.startDate)
+  if (query.endDate) params.set('endDate', query.endDate)
+  if (query.category) params.set('category', query.category)
+  if (query.limit !== undefined) params.set('limit', String(query.limit))
+  if (query.offset !== undefined) params.set('offset', String(query.offset))
+  if (query.sortBy) params.set('sortBy', query.sortBy)
+
+  const search = params.toString()
+  return `/api/customers/12345/${endpoint}${search ? `?${search}` : ''}`
+}
+
+function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummary> {
+  return requestJson(customerUrl('spending/summary', query))
+}
+
+function fetchSpendingCategories(query: SpendingQuery = {}): Promise<SpendingCategories> {
+  return requestJson(customerUrl('spending/categories', query))
+}
+
+function fetchSpendingTransactions(query: TransactionQuery = {}): Promise<SpendingTransactions> {
+  return requestJson(customerUrl('transactions', query))
+}
+
+function fetchSpendingTrends(months = 12, category?: string): Promise<SpendingTrends> {
+  const params = new URLSearchParams({ months: String(months) })
+  if (category) params.set('category', category)
+
+  return requestJson(`/api/customers/12345/spending/trends?${params}`)
+}
+
+function fetchSpendingGoals(category?: string): Promise<SpendingGoals> {
+  const params = new URLSearchParams()
+  if (category) params.set('category', category)
+  const search = params.toString()
+
+  return requestJson(`/api/customers/12345/goals${search ? `?${search}` : ''}`)
+}
+
+function fetchSpendingFilters(): Promise<SpendingFilters> {
+  return requestJson('/api/customers/12345/filters')
+}
+
+function fetchSpendingProfile(): Promise<SpendingProfile> {
+  return requestJson('/api/customers/12345/profile')
+}
+
+export const spendingApi = {
+  ...createSpendingApi(),
+  summary: fetchSpendingSummary,
+  categories: fetchSpendingCategories,
+  transactions: fetchSpendingTransactions,
+  trends: fetchSpendingTrends,
+  goals: fetchSpendingGoals,
+  filters: fetchSpendingFilters,
+  profile: fetchSpendingProfile,
+}

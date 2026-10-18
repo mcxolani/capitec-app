@@ -1,14 +1,10 @@
-import { beforeAll, describe, expect, it } from 'vitest'
-import { loadValidationRules } from '@/test/loanRules'
+import { describe, expect, it } from 'vitest'
+import { LOAN_VALIDATION_RULES } from '@/test/loanData'
 import type { ValidationRules } from '@/types/loan'
 import { EMPTY_LOAN_FORM, parseAmount, validateLoanForm } from './loanValidation'
 import type { LoanFormValues } from './loanValidation'
 
-let rules: ValidationRules
-
-beforeAll(async () => {
-  rules = await loadValidationRules()
-})
+const rules: ValidationRules = LOAN_VALIDATION_RULES
 
 // the spec's example request, as typed into the form
 const VALID: LoanFormValues = {

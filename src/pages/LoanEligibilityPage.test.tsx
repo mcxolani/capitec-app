@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { checkEligibility, fetchValidationRules } from '@/api/loanApi'
+import { LOAN_ELIGIBILITY_RESPONSE, LOAN_VALIDATION_RULES } from '@/test/loanData'
 import { fillSpecExample } from '@/test/loanForm'
 import LoanEligibilityPage from './LoanEligibilityPage'
 
@@ -10,14 +11,19 @@ vi.mock('@/api/loanApi', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api/loanApi')>()
   return {
     ...actual,
-    fetchValidationRules: vi.fn(actual.fetchValidationRules),
-    checkEligibility: vi.fn(actual.checkEligibility),
+    fetchValidationRules: vi.fn(),
+    checkEligibility: vi.fn(),
   }
 })
 
 const submit = () => userEvent.click(screen.getByRole('button', { name: 'Check eligibility' }))
 
 describe('LoanEligibilityPage', () => {
+  beforeEach(() => {
+    vi.mocked(fetchValidationRules).mockResolvedValue(LOAN_VALIDATION_RULES)
+    vi.mocked(checkEligibility).mockResolvedValue(LOAN_ELIGIBILITY_RESPONSE)
+  })
+
   it('shows the form once the validation rules have loaded', async () => {
     render(<LoanEligibilityPage />)
 
@@ -28,6 +34,12 @@ describe('LoanEligibilityPage', () => {
   })
 
   it('checks eligibility and moves focus to the result', async () => {
+    let resolveEligibility!: (result: typeof LOAN_ELIGIBILITY_RESPONSE) => void
+    const pendingResult = new Promise<typeof LOAN_ELIGIBILITY_RESPONSE>((resolve) => {
+      resolveEligibility = resolve
+    })
+    vi.mocked(checkEligibility).mockReturnValueOnce(pendingResult)
+
     render(<LoanEligibilityPage />)
     await screen.findByRole('group', { name: 'About you' })
 
@@ -35,6 +47,7 @@ describe('LoanEligibilityPage', () => {
     await submit()
 
     expect(screen.getByRole('button', { name: 'Checking…' })).toBeDisabled()
+    resolveEligibility(LOAN_ELIGIBILITY_RESPONSE)
     const heading = await screen.findByRole('heading', {
       name: "You're likely eligible for R150,000",
     })
@@ -44,6 +57,16 @@ describe('LoanEligibilityPage', () => {
   })
 
   it('updates the result when the form is submitted again', async () => {
+    vi.mocked(checkEligibility)
+      .mockResolvedValueOnce(LOAN_ELIGIBILITY_RESPONSE)
+      .mockResolvedValueOnce({
+        ...LOAN_ELIGIBILITY_RESPONSE,
+        eligibilityResult: { ...LOAN_ELIGIBILITY_RESPONSE.eligibilityResult, isEligible: false },
+        recommendedLoan: {
+          ...LOAN_ELIGIBILITY_RESPONSE.recommendedLoan,
+          recommendedAmount: 169000,
+        },
+      })
     render(<LoanEligibilityPage />)
     await screen.findByRole('group', { name: 'About you' })
     await fillSpecExample()

@@ -1,16 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { fillSpecExample } from '@/test/loanForm'
-import { loadValidationRules } from '@/test/loanRules'
+import { LOAN_VALIDATION_RULES } from '@/test/loanData'
 import type { ValidationRules } from '@/types/loan'
 import LoanForm from './LoanForm'
 
-let rules: ValidationRules
-
-beforeAll(async () => {
-  rules = await loadValidationRules()
-})
+const rules: ValidationRules = LOAN_VALIDATION_RULES
 
 const renderForm = (submitting = false) => {
   const onSubmit = vi.fn()

@@ -17,13 +17,13 @@ The home photograph is bundled at `public/images/banking-tools.webp`, sourced fr
 - Search for an address or place (Google Places autocomplete), or use the browser's current location.
 - Filter branches within a chosen radius (1, 5, 10, 25 or 50 km), shown as a circle on the map.
 - Results are sorted by straight-line distance from the chosen point.
-- Branch data is mocked in [`src/api/branchApi.ts`](src/api/branchApi.ts) (branches in Gauteng, Cape Town and Durban, with a simulated network delay). Replace `fetchBranches()` to connect a real API.
+- Branch data loads from the Spring Boot API at `/api/branches`; the Vite dev server proxies `/api` to `http://localhost:8081` by default. Start the backend with the instructions in [`backend/springboot/README.md`](backend/springboot/README.md) before using the branch locator. If the backend runs on another port, set `VITE_API_PROXY_TARGET` when starting Vite, for example `VITE_API_PROXY_TARGET=http://localhost:18081 npm run dev`.
 
 ### Loan eligibility simulator (`/loan-eligibility`)
 
 Customers enter their income, expenses and the loan they want, and get an estimate of whether they'd qualify, what they could borrow and what it would cost.
 
-- The API from the [spec](docs/LoanEligibilitySimulatorEndpoints.md) is mocked in [`src/api/loanApi.ts`](src/api/loanApi.ts): eligibility check, loan products, rate calculator and validation rules, each with a simulated network delay.
+- Loan products, validation rules, eligibility checks and rate calculations load from the Spring Boot API.
 - The form validates against the rules the API returns and shows every error at once. Errors and focus are wired up for screen readers.
 - Results come in three forms: eligible, over budget (with the largest affordable amount suggested instead), and declined, each with a plain-language reason.
 - Every result says it's an estimate from simulated data, not a credit decision or loan offer. The approval likelihood is capped at 95%.
@@ -47,7 +47,7 @@ Where the spec's example numbers are inconsistent, the code follows the standard
 
 Explore a fictional customer's spending with summary cards, a category donut, monthly trends, budgets and a sortable transaction list. The dashboard uses the same layout, controls, white panels and responsive styling as the other pages.
 
-- All seven endpoints from the [spec](docs/CustomerSpendingInsightsEndpoints.md) are mocked in [`src/api/spendingApi.ts`](src/api/spendingApi.ts). A seeded generator provides 25 calendar months (about 45 transactions per month) so a full year always has a complete preceding comparison period. Every total comes from that shared dataset, avoiding the contradictory example responses. No customer data is sent to a server.
+- All seven spending endpoints load from the Spring Boot API. The dashboard sends the applicable period, custom dates, category, sort order, page offset or month count; the profile, filter options, budgets and analytics use the same backend dataset. `createSpendingApi` remains available to provide deterministic mock data in tests.
 - Period, category, custom dates and transaction sort are stored in the URL. Custom dates override the preset; selecting a preset clears the dates. Dates are inclusive in `Africa/Johannesburg`. Invalid URL dates fall back to the selected preset with a visible explanation.
 - Date filters affect the overview, category breakdown and transactions. Trends show 12 months by default, selectable from 6, 12 or 24; budgets always track the current month. Category selection applies to all spending sections. Clicking a category in the breakdown applies that filter.
 - Budgets are on track below 80%, near budget from 80% through 100%, and over budget above 100%. Status labels accompany the colours. A comparison with no previous spending shows an unavailable change instead of an infinite percentage.
@@ -55,21 +55,43 @@ Explore a fictional customer's spending with summary cards, a category donut, mo
 - Charts use Recharts for the responsive donut and monthly bars, axes, labels and tooltips. The category list and monthly data table provide the same figures as text. Clicking a donut segment filters the dashboard.
 - Radix UI provides the period/category toggle groups, budget progress bars and expandable monthly figures, using the app's existing CSS classes. Icons use `lucide-react`. Money includes cents; the existing loan formatter continues to show whole rands.
 
-The mock API uses the browser's current date when the module loads. Tests inject a date and disable the delay with `createSpendingApi(date, 0)`. The mock extends summary/category queries with a category and custom dates, and trends/goals with a category, for coordinated filtering. Comparison percentages and the top category can be `null` when there is no baseline or no spending. These extensions need matching support when replacing the mock with a real backend.
+The mock API uses the browser's current date when the module loads. Tests inject a date and disable the delay with `createSpendingApi(date, 0)`. The mock extends summary/category queries with a category and custom dates, and trends/goals with a category, for coordinated filtering. Comparison percentages and the top category can be `null` when there is no baseline or no spending; the Spring Boot summary uses the same fields.
 
 Input validation lives in the filter controls and URL parser. The local mock API trusts those inputs, with only the specified page-size and history limits applied. Shared types describe the data used by components; API return types are inferred.
 
 ## Getting started
 
-Requirements: Node.js 22+ and npm.
+### Run the frontend and API together
+
+```sh
+cp .env.example .env.local # set VITE_GOOGLE_MAPS_API_KEY in this file
+docker compose --env-file .env.local up --build
+```
+
+Open the app at `http://localhost:8080`. Spring Boot runs at `http://localhost:8081`, with Swagger UI at `http://localhost:8081/swagger-ui/index.html`. Stop both containers with `docker compose --env-file .env.local down`.
+
+Docker Compose requires Docker Engine and the Compose plugin. The Maps API key is required to use the branch map. To avoid host port conflicts, set `PORT` for the web app or `API_PORT` for Spring Boot, for example `PORT=8082 API_PORT=18082 docker compose --env-file .env.local up --build`.
+
+### Run locally for development
+
+Requirements: Node.js 22+, npm, Java 21 and Maven.
+
+Start the backend in one terminal:
+
+```sh
+mvn -f backend/springboot/pom.xml spring-boot:run
+```
+
+Then start the frontend in another:
 
 ```sh
 npm install
-cp .env.example .env.local   # then fill in the values below
+cp .env.example .env.local # set VITE_GOOGLE_MAPS_API_KEY in this file
 npm run dev
 ```
 
-The dev server runs at `http://localhost:5173`.
+Vite runs at `http://localhost:5173` and proxies `/api` to Spring Boot on port `8081`.
+If you start Spring Boot on another port, point Vite at it, for example `VITE_API_PROXY_TARGET=http://localhost:18081 npm run dev`.
 
 ### Environment variables
 
@@ -107,7 +129,7 @@ Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testi
 
 ```
 src/
-  api/          mock branch, loan and spending APIs
+  api/          branch, loan and spending API clients and mock spending fixtures
   components/
     layout/     header with responsive menu, footer, page layout
     branch-locator/
@@ -133,31 +155,23 @@ Husky installs the hooks on `npm install`. The pre-commit hook runs [lint-staged
 
 Fixes are added back to the same commit. The commit is blocked if ESLint finds an error it can't fix or a related test fails.
 
-GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on pull requests and pushes to `main`: format check, lint, type check, tests with coverage, production build, and a Docker image build.
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on pull requests and pushes to `main`: format check, lint, type check, tests with coverage, production build, both Docker image builds and a Compose configuration check.
 
-## Production Docker image
+## Docker deployment
 
-The API key is passed as a build argument, because Vite builds it into the JavaScript. `.env*` files are excluded from the Docker build context. The build stops if the key is missing.
+The Compose setup builds the React app and Spring Boot API as separate containers. Nginx serves the frontend and proxies `/api` requests to the API container, so the browser uses the same URLs in Docker and local development. The API port is also published directly for Swagger UI.
 
-With Docker Compose, reading the values from `.env.local`:
+The frontend build needs the Maps API key because Vite bundles `VITE_*` values into the JavaScript. `.env*` files are excluded from the Docker build context; Compose passes the key as a build argument.
+
+To rebuild and start both services:
 
 ```sh
 docker compose --env-file .env.local up --build
 ```
 
-Or with plain Docker:
+Set `PORT` or `API_PORT` to publish either service on another host port. The API image is built from [`backend/springboot/Dockerfile`](backend/springboot/Dockerfile), runs as an unprivileged user, and exposes port `8081` inside Compose.
 
-```sh
-docker build \
-  --build-arg VITE_GOOGLE_MAPS_API_KEY=your-key \
-  --build-arg VITE_GOOGLE_MAP_ID=your-map-id \
-  -t capitec-app .
-docker run --rm -p 8080:8080 capitec-app
-```
-
-Open `http://localhost:8080`. Set `PORT` to publish on a different host port with Compose (for example `PORT=8081 docker compose --env-file .env.local up --build`).
-
-The image builds the app in a Node.js stage and serves it with unprivileged Nginx on port 8080. Nginx:
+The web image builds the app in a Node.js stage and serves it with unprivileged Nginx on port 8080. Nginx:
 
 - falls back to `index.html`, so direct visits to client-side routes work
 - caches the fingerprinted files in `/assets/` for a year, and makes browsers revalidate `index.html` so new deploys show up straight away

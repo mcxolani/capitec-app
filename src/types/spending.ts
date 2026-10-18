@@ -5,6 +5,16 @@ export interface SpendingQuery {
   category?: string
 }
 
+export interface SpendingProfile {
+  customerId: string
+  name: string
+  email: string
+  joinDate: string
+  accountType: string
+  totalSpent: number
+  currency: string
+}
+
 export interface DateRange {
   startDate: string
   endDate: string
@@ -60,6 +70,16 @@ export interface TransactionQuery extends SpendingQuery {
   limit?: number
   offset?: number
   sortBy?: string
+}
+
+export interface SpendingTransactions {
+  transactions: Transaction[]
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+    hasMore: boolean
+  }
 }
 
 export interface SpendingGoals {
