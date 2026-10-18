@@ -1,4 +1,4 @@
-import type { EligibilityResponse, LoanProduct, ValidationRules } from '@/types/loan'
+import type { EligibilityResponse, LoanProduct, RateResponse, ValidationRules } from '@/types/loan'
 
 export const LOAN_PRODUCTS: LoanProduct[] = [
   {
@@ -98,4 +98,20 @@ export const LOAN_ELIGIBILITY_RESPONSE: EligibilityResponse = {
     loanToIncomeRatio: 50,
     affordabilityScore: 'good',
   },
+}
+
+export const LOAN_RATE_RESPONSE: RateResponse = {
+  interestRate: 12.5,
+  monthlyPayment: 7096.1,
+  totalInterest: 20306.3,
+  totalRepayment: 170306.3,
+  paymentSchedule: [
+    {
+      month: 1,
+      payment: 7096.1,
+      principal: 5533.6,
+      interest: 1562.5,
+      balance: 144466.4,
+    },
+  ],
 }

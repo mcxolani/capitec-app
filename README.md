@@ -23,7 +23,7 @@ The home photograph is bundled at `public/images/banking-tools.webp`, sourced fr
 
 Customers enter their income, expenses and the loan they want, and get an estimate of whether they'd qualify, what they could borrow and what it would cost.
 
-- Loan products, validation rules and eligibility checks load from the Spring Boot API. Rate calculations still use the local mock in [`src/api/loanApi.ts`](src/api/loanApi.ts) until that endpoint is connected.
+- Loan products, validation rules, eligibility checks and rate calculations load from the Spring Boot API.
 - The form validates against the rules the API returns and shows every error at once. Errors and focus are wired up for screen readers.
 - Results come in three forms: eligible, over budget (with the largest affordable amount suggested instead), and declined, each with a plain-language reason.
 - Every result says it's an estimate from simulated data, not a credit decision or loan offer. The approval likelihood is capped at 95%.
