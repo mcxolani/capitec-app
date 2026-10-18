@@ -62,6 +62,16 @@ export interface TransactionQuery extends SpendingQuery {
   sortBy?: string
 }
 
+export interface SpendingTransactions {
+  transactions: Transaction[]
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+    hasMore: boolean
+  }
+}
+
 export interface SpendingGoals {
   goals: {
     id: string

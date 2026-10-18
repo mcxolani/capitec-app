@@ -2,6 +2,7 @@ import type {
   SpendingCategories,
   SpendingQuery,
   SpendingSummary,
+  SpendingTransactions,
   TransactionQuery,
 } from '@/types/spending'
 import {
@@ -140,12 +141,15 @@ export function createSpendingApi(now = new Date(), delay = 250) {
   }
 }
 
-function spendingUrl(endpoint: string, query: SpendingQuery): string {
+function spendingUrl(endpoint: string, query: TransactionQuery): string {
   const params = new URLSearchParams()
   if (query.period) params.set('period', query.period)
   if (query.startDate) params.set('startDate', query.startDate)
   if (query.endDate) params.set('endDate', query.endDate)
   if (query.category) params.set('category', query.category)
+  if (query.limit !== undefined) params.set('limit', String(query.limit))
+  if (query.offset !== undefined) params.set('offset', String(query.offset))
+  if (query.sortBy) params.set('sortBy', query.sortBy)
 
   const search = params.toString()
   return `/api/customers/12345/spending/${endpoint}${search ? `?${search}` : ''}`
@@ -159,8 +163,13 @@ function fetchSpendingCategories(query: SpendingQuery = {}): Promise<SpendingCat
   return requestJson(spendingUrl('categories', query))
 }
 
+function fetchSpendingTransactions(query: TransactionQuery = {}): Promise<SpendingTransactions> {
+  return requestJson(spendingUrl('transactions', query))
+}
+
 export const spendingApi = {
   ...createSpendingApi(),
   summary: fetchSpendingSummary,
   categories: fetchSpendingCategories,
+  transactions: fetchSpendingTransactions,
 }
