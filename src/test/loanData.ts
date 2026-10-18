@@ -1,4 +1,4 @@
-import type { LoanProduct, ValidationRules } from '@/types/loan'
+import type { EligibilityResponse, LoanProduct, ValidationRules } from '@/types/loan'
 
 export const LOAN_PRODUCTS: LoanProduct[] = [
   {
@@ -75,5 +75,27 @@ export const LOAN_VALIDATION_RULES: ValidationRules = {
       required: true,
       errorMessage: 'Loan term must be between 6 and 60 months',
     },
+  },
+}
+
+export const LOAN_ELIGIBILITY_RESPONSE: EligibilityResponse = {
+  eligibilityResult: {
+    isEligible: true,
+    approvalLikelihood: 85,
+    riskCategory: 'low',
+    decisionReason: 'The requested loan fits your budget.',
+  },
+  recommendedLoan: {
+    maxAmount: 300000,
+    recommendedAmount: 150000,
+    interestRate: 12.5,
+    monthlyPayment: 7096.1,
+    totalRepayment: 170306.3,
+  },
+  affordabilityAnalysis: {
+    disposableIncome: 10000,
+    debtToIncomeRatio: 20,
+    loanToIncomeRatio: 50,
+    affordabilityScore: 'good',
   },
 }

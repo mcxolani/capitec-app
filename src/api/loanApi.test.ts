@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { LOAN_PRODUCTS, LOAN_VALIDATION_RULES } from '@/test/loanData'
+import { LOAN_ELIGIBILITY_RESPONSE, LOAN_PRODUCTS, LOAN_VALIDATION_RULES } from '@/test/loanData'
 import type { EligibilityRequest } from '@/types/loan'
 import { calculateRate, checkEligibility, fetchLoanProducts, fetchValidationRules } from './loanApi'
 
@@ -18,7 +18,11 @@ describe('loanApi', () => {
         Promise.resolve({
           ok: true,
           json: async () =>
-            input === '/api/loans/products' ? { products: LOAN_PRODUCTS } : LOAN_VALIDATION_RULES,
+            input === '/api/loans/products'
+              ? { products: LOAN_PRODUCTS }
+              : input === '/api/loans/eligibility'
+                ? LOAN_ELIGIBILITY_RESPONSE
+                : LOAN_VALIDATION_RULES,
         }),
       ),
     )
@@ -67,7 +71,7 @@ describe('loanApi', () => {
   })
 
   describe('checkEligibility', () => {
-    it('assesses the request', async () => {
+    it('posts the request and returns the backend response', async () => {
       const request: EligibilityRequest = {
         personalInfo: { age: 35, employmentStatus: 'employed', employmentDuration: 24 },
         financialInfo: {
@@ -79,10 +83,14 @@ describe('loanApi', () => {
         loanDetails: { requestedAmount: 150000, loanTerm: 24, loanPurpose: 'home_improvement' },
       }
 
-      const result = await settle(checkEligibility(request))
+      const result = await checkEligibility(request)
 
-      expect(result.eligibilityResult.isEligible).toBe(true)
-      expect(result.recommendedLoan.monthlyPayment).toBe(7096.1)
+      expect(result).toEqual(LOAN_ELIGIBILITY_RESPONSE)
+      expect(fetch).toHaveBeenCalledWith('/api/loans/eligibility', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      })
     })
   })
 

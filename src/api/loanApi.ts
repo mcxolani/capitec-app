@@ -7,11 +7,11 @@ import type {
   ValidationRules,
 } from '@/types/loan'
 import { repaymentTotals } from '@/utils/loanCalculations'
-import { assessEligibility, interestRateFor } from '@/utils/loanEligibility'
+import { interestRateFor } from '@/utils/loanEligibility'
 import { requestJson } from './request'
 
-// Loan products and validation rules come from Spring Boot. Eligibility and
-// rate calculations still use the local mock until those endpoints are wired up.
+// Loan products, validation rules and eligibility checks use Spring Boot.
+// Rate calculations stay local until that endpoint is connected.
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 300))
 
@@ -30,9 +30,12 @@ export function fetchValidationRules(): Promise<ValidationRules> {
 }
 
 // POST /api/loans/eligibility
-export async function checkEligibility(request: EligibilityRequest): Promise<EligibilityResponse> {
-  await delay()
-  return assessEligibility(request)
+export function checkEligibility(request: EligibilityRequest): Promise<EligibilityResponse> {
+  return requestJson('/api/loans/eligibility', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  })
 }
 
 // The credit-score rate bands are for personal loans; vehicle finance maps the
