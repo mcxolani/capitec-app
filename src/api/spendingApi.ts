@@ -2,6 +2,7 @@ import type {
   SpendingCategories,
   SpendingQuery,
   SpendingSummary,
+  SpendingTrends,
   SpendingTransactions,
   TransactionQuery,
 } from '@/types/spending'
@@ -167,9 +168,17 @@ function fetchSpendingTransactions(query: TransactionQuery = {}): Promise<Spendi
   return requestJson(spendingUrl('transactions', query))
 }
 
+function fetchSpendingTrends(months = 12, category?: string): Promise<SpendingTrends> {
+  const params = new URLSearchParams({ months: String(months) })
+  if (category) params.set('category', category)
+
+  return requestJson(`/api/customers/12345/spending/trends?${params}`)
+}
+
 export const spendingApi = {
   ...createSpendingApi(),
   summary: fetchSpendingSummary,
   categories: fetchSpendingCategories,
   transactions: fetchSpendingTransactions,
+  trends: fetchSpendingTrends,
 }
