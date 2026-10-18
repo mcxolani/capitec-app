@@ -1,5 +1,6 @@
 import type {
   SpendingCategories,
+  SpendingGoals,
   SpendingQuery,
   SpendingSummary,
   SpendingTrends,
@@ -175,10 +176,19 @@ function fetchSpendingTrends(months = 12, category?: string): Promise<SpendingTr
   return requestJson(`/api/customers/12345/spending/trends?${params}`)
 }
 
+function fetchSpendingGoals(category?: string): Promise<SpendingGoals> {
+  const params = new URLSearchParams()
+  if (category) params.set('category', category)
+  const search = params.toString()
+
+  return requestJson(`/api/customers/12345/goals${search ? `?${search}` : ''}`)
+}
+
 export const spendingApi = {
   ...createSpendingApi(),
   summary: fetchSpendingSummary,
   categories: fetchSpendingCategories,
   transactions: fetchSpendingTransactions,
   trends: fetchSpendingTrends,
+  goals: fetchSpendingGoals,
 }
