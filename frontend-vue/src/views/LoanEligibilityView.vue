@@ -678,29 +678,17 @@ onMounted(() => loanStore.load())
   gap: 0.75rem;
 }
 
-.loan-product.p-card,
-.loan-form-card.p-card,
-.loan-result.p-card,
-.loan-schedule.p-card,
-.loan-result-placeholder.p-card {
+.loan-view :deep(.p-card) {
   border: 1px solid var(--color-border);
   border-radius: 18px;
   box-shadow: 0 6px 20px rgb(32 49 59 / 5%);
 }
 
-.loan-product :deep(.p-card-body),
-.loan-form-card :deep(.p-card-body),
-.loan-result :deep(.p-card-body),
-.loan-schedule :deep(.p-card-body),
-.loan-result-placeholder :deep(.p-card-body) {
+.loan-view :deep(.p-card-body) {
   padding: 1.25rem;
 }
 
-.loan-product :deep(.p-card-content),
-.loan-form-card :deep(.p-card-content),
-.loan-result :deep(.p-card-content),
-.loan-schedule :deep(.p-card-content),
-.loan-result-placeholder :deep(.p-card-content) {
+.loan-view :deep(.p-card-content) {
   padding: 0;
 }
 
@@ -767,9 +755,7 @@ onMounted(() => loanStore.load())
   flex: 1 1 58%;
 }
 
-.loan-form-card :deep(.p-card-title),
-.loan-result :deep(.p-card-title),
-.loan-schedule :deep(.p-card-title) {
+.loan-view :deep(.p-card-title) {
   color: var(--color-blue-dark);
   font-size: 1.1rem;
 }
@@ -1051,11 +1037,7 @@ onMounted(() => loanStore.load())
     padding-left: 4rem;
   }
 
-  .loan-form-card :deep(.p-card-body),
-  .loan-result :deep(.p-card-body),
-  .loan-schedule :deep(.p-card-body),
-  .loan-product :deep(.p-card-body),
-  .loan-result-placeholder :deep(.p-card-body) {
+  .loan-view :deep(.p-card-body) {
     padding: 1rem;
   }
 }
