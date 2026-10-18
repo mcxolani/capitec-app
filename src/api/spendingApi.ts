@@ -1,4 +1,4 @@
-import type { SpendingQuery, TransactionQuery } from '@/types/spending'
+import type { SpendingQuery, SpendingSummary, TransactionQuery } from '@/types/spending'
 import {
   budgetStatus,
   categoryBreakdown,
@@ -10,6 +10,7 @@ import {
 import { saDate } from '@/utils/spendingFormat'
 import { generateTransactions } from './spendingData'
 import { spendingFilters } from '@/constants/spending'
+import { requestJson } from './request'
 
 // All seven mock endpoints share the same snapshot. Inject a clock and zero delay in tests.
 export function createSpendingApi(now = new Date(), delay = 250) {
@@ -134,4 +135,19 @@ export function createSpendingApi(now = new Date(), delay = 250) {
   }
 }
 
-export const spendingApi = createSpendingApi()
+function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummary> {
+  const params = new URLSearchParams()
+  if (query.period) params.set('period', query.period)
+  if (query.startDate) params.set('startDate', query.startDate)
+  if (query.endDate) params.set('endDate', query.endDate)
+  if (query.category) params.set('category', query.category)
+
+  const search = params.toString()
+  const path = `/api/customers/12345/spending/summary${search ? `?${search}` : ''}`
+  return requestJson(path)
+}
+
+export const spendingApi = {
+  ...createSpendingApi(),
+  summary: fetchSpendingSummary,
+}

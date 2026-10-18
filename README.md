@@ -47,7 +47,7 @@ Where the spec's example numbers are inconsistent, the code follows the standard
 
 Explore a fictional customer's spending with summary cards, a category donut, monthly trends, budgets and a sortable transaction list. The dashboard uses the same layout, controls, white panels and responsive styling as the other pages.
 
-- All seven endpoints from the [spec](docs/CustomerSpendingInsightsEndpoints.md) are mocked in [`src/api/spendingApi.ts`](src/api/spendingApi.ts). A seeded generator provides 25 calendar months (about 45 transactions per month) so a full year always has a complete preceding comparison period. Every total comes from that shared dataset, avoiding the contradictory example responses. No customer data is sent to a server.
+- The summary cards load from the Spring Boot API and send the selected period, custom dates and category. The other spending sections still use the seeded mock data in [`src/api/spendingApi.ts`](src/api/spendingApi.ts), so their figures may not match the summary until the remaining endpoints are connected.
 - Period, category, custom dates and transaction sort are stored in the URL. Custom dates override the preset; selecting a preset clears the dates. Dates are inclusive in `Africa/Johannesburg`. Invalid URL dates fall back to the selected preset with a visible explanation.
 - Date filters affect the overview, category breakdown and transactions. Trends show 12 months by default, selectable from 6, 12 or 24; budgets always track the current month. Category selection applies to all spending sections. Clicking a category in the breakdown applies that filter.
 - Budgets are on track below 80%, near budget from 80% through 100%, and over budget above 100%. Status labels accompany the colours. A comparison with no previous spending shows an unavailable change instead of an infinite percentage.
@@ -55,7 +55,7 @@ Explore a fictional customer's spending with summary cards, a category donut, mo
 - Charts use Recharts for the responsive donut and monthly bars, axes, labels and tooltips. The category list and monthly data table provide the same figures as text. Clicking a donut segment filters the dashboard.
 - Radix UI provides the period/category toggle groups, budget progress bars and expandable monthly figures, using the app's existing CSS classes. Icons use `lucide-react`. Money includes cents; the existing loan formatter continues to show whole rands.
 
-The mock API uses the browser's current date when the module loads. Tests inject a date and disable the delay with `createSpendingApi(date, 0)`. The mock extends summary/category queries with a category and custom dates, and trends/goals with a category, for coordinated filtering. Comparison percentages and the top category can be `null` when there is no baseline or no spending. These extensions need matching support when replacing the mock with a real backend.
+The mock API uses the browser's current date when the module loads. Tests inject a date and disable the delay with `createSpendingApi(date, 0)`. The mock extends summary/category queries with a category and custom dates, and trends/goals with a category, for coordinated filtering. Comparison percentages and the top category can be `null` when there is no baseline or no spending; the Spring Boot summary uses the same fields.
 
 Input validation lives in the filter controls and URL parser. The local mock API trusts those inputs, with only the specified page-size and history limits applied. Shared types describe the data used by components; API return types are inferred.
 
