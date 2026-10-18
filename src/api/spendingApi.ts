@@ -1,4 +1,9 @@
-import type { SpendingQuery, SpendingSummary, TransactionQuery } from '@/types/spending'
+import type {
+  SpendingCategories,
+  SpendingQuery,
+  SpendingSummary,
+  TransactionQuery,
+} from '@/types/spending'
 import {
   budgetStatus,
   categoryBreakdown,
@@ -135,7 +140,7 @@ export function createSpendingApi(now = new Date(), delay = 250) {
   }
 }
 
-function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummary> {
+function spendingUrl(endpoint: string, query: SpendingQuery): string {
   const params = new URLSearchParams()
   if (query.period) params.set('period', query.period)
   if (query.startDate) params.set('startDate', query.startDate)
@@ -143,11 +148,19 @@ function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummar
   if (query.category) params.set('category', query.category)
 
   const search = params.toString()
-  const path = `/api/customers/12345/spending/summary${search ? `?${search}` : ''}`
-  return requestJson(path)
+  return `/api/customers/12345/spending/${endpoint}${search ? `?${search}` : ''}`
+}
+
+function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummary> {
+  return requestJson(spendingUrl('summary', query))
+}
+
+function fetchSpendingCategories(query: SpendingQuery = {}): Promise<SpendingCategories> {
+  return requestJson(spendingUrl('categories', query))
 }
 
 export const spendingApi = {
   ...createSpendingApi(),
   summary: fetchSpendingSummary,
+  categories: fetchSpendingCategories,
 }
