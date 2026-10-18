@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import AppErrorBoundary from '@/components/layout/AppErrorBoundary.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 </script>
@@ -8,7 +9,9 @@ import AppHeader from '@/components/layout/AppHeader.vue'
   <div class="app-shell">
     <AppHeader />
     <main class="app-shell__content">
-      <RouterView />
+      <AppErrorBoundary>
+        <RouterView />
+      </AppErrorBoundary>
     </main>
     <AppFooter />
   </div>

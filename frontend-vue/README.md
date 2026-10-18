@@ -30,4 +30,4 @@ Views live in `src/views`, shared UI in `src/components`, Pinia stores in `src/s
 
 Leaflet and Vue Leaflet render the map with OpenStreetMap tiles. Keep the visible map attribution in place and follow the [tile usage policy](https://operations.osmfoundation.org/policies/tiles/). Address search is submitted by the user without autocomplete. The default Nominatim lookup is rate limited to one request per second in each browser tab; for higher traffic, set `VITE_GEOCODER_URL` to a geocoding endpoint intended for your application and follow its [usage policy](https://operations.osmfoundation.org/policies/nominatim/). Set `VITE_MAP_TILE_URL` and matching `VITE_MAP_TILE_ATTRIBUTION` to change tile providers.
 
-PrimeVue provides controls, `@lucide/vue` provides icons, and Manrope is bundled as the global font. Page styling is scoped to Vue components and uses flexbox.
+PrimeVue 4 and `@primeuix/themes` provide controls, `@lucide/vue` provides icons, and Manrope is bundled as the global font. An app-level error display handles page errors. Page styling is scoped to Vue components and uses flexbox.

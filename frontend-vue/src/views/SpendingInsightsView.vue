@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Clock3, CreditCard, Info, Wallet } from '@lucide/vue'
 import Button from 'primevue/button'
@@ -8,7 +8,6 @@ import Message from 'primevue/message'
 import ProgressBar from 'primevue/progressbar'
 import ProgressSpinner from 'primevue/progressspinner'
 import Select from 'primevue/select'
-import SpendingCharts from '@/components/spending-insights/SpendingCharts.vue'
 import SpendingTransactions from '@/components/spending-insights/SpendingTransactions.vue'
 import { useSpendingStore } from '@/stores/spendingStore'
 import type { SpendingDateRange, SpendingPeriod, SpendingSort } from '@/types/spending'
@@ -17,6 +16,9 @@ import { formatSpendingCurrency } from '@/utils/currency'
 const spendingStore = useSpendingStore()
 const route = useRoute()
 const router = useRouter()
+const SpendingCharts = defineAsyncComponent(
+  () => import('@/components/spending-insights/SpendingCharts.vue'),
+)
 const periods: SpendingPeriod[] = ['7d', '30d', '90d', '1y']
 const months = ref(12)
 const draftStartDate = ref(typeof route.query.startDate === 'string' ? route.query.startDate : '')

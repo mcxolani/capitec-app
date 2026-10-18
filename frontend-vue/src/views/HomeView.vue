@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, Calculator, ChartPie, Landmark, MapPin } from '@lucide/vue'
+import { ArrowRight, Calculator, ChartPie, MapPin } from '@lucide/vue'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 
@@ -43,7 +43,14 @@ const tools = [
       </div>
 
       <div class="welcome-art" aria-hidden="true">
-        <span class="welcome-art__mark"><Landmark :size="32" aria-hidden="true" /></span>
+        <span class="welcome-art__mark">
+          <img
+            height="15"
+            src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg"
+            alt=""
+            aria-hidden="true"
+          />
+        </span>
         <p class="welcome-art__label">Your next step</p>
         <strong>starts with a clearer picture.</strong>
         <span class="welcome-art__dot welcome-art__dot--one" aria-hidden="true"></span>
