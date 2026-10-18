@@ -1,6 +1,8 @@
 import type {
   SpendingCategories,
+  SpendingFilters,
   SpendingGoals,
+  SpendingProfile,
   SpendingQuery,
   SpendingSummary,
   SpendingTrends,
@@ -184,6 +186,14 @@ function fetchSpendingGoals(category?: string): Promise<SpendingGoals> {
   return requestJson(`/api/customers/12345/goals${search ? `?${search}` : ''}`)
 }
 
+function fetchSpendingFilters(): Promise<SpendingFilters> {
+  return requestJson('/api/customers/12345/filters')
+}
+
+function fetchSpendingProfile(): Promise<SpendingProfile> {
+  return requestJson('/api/customers/12345/profile')
+}
+
 export const spendingApi = {
   ...createSpendingApi(),
   summary: fetchSpendingSummary,
@@ -191,4 +201,6 @@ export const spendingApi = {
   transactions: fetchSpendingTransactions,
   trends: fetchSpendingTrends,
   goals: fetchSpendingGoals,
+  filters: fetchSpendingFilters,
+  profile: fetchSpendingProfile,
 }
