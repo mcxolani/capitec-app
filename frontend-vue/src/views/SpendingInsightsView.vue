@@ -7,6 +7,7 @@ import Card from 'primevue/card'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import Select from 'primevue/select'
+import SpendingCharts from '@/components/spending-insights/SpendingCharts.vue'
 import { useSpendingStore } from '@/stores/spendingStore'
 import type { SpendingPeriod } from '@/types/spending'
 import { formatSpendingCurrency } from '@/utils/currency'
@@ -61,7 +62,7 @@ function changeText(change: number | null) {
   return `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than the previous period`
 }
 
-watch(period, (value) => void spendingStore.loadSummary(value))
+watch(period, (value) => void spendingStore.loadPeriod(value))
 onMounted(() => spendingStore.load(period.value))
 </script>
 
@@ -103,11 +104,11 @@ onMounted(() => spendingStore.load(period.value))
           />
         </div>
 
-        <Message v-if="spendingStore.summaryError" severity="warn" :closable="false">
-          {{ spendingStore.summaryError }}
+        <Message v-if="spendingStore.periodError" severity="warn" :closable="false">
+          {{ spendingStore.periodError }}
         </Message>
 
-        <div class="spending-metrics" :aria-busy="spendingStore.summaryLoading">
+        <div class="spending-metrics" :aria-busy="spendingStore.periodLoading">
           <Card v-for="metric in metrics" :key="metric.label" class="spending-metric">
             <template #content>
               <div class="spending-metric__topline">
@@ -122,6 +123,14 @@ onMounted(() => spendingStore.load(period.value))
           </Card>
         </div>
       </section>
+
+      <SpendingCharts
+        v-if="spendingStore.categories && spendingStore.trends"
+        :categories="spendingStore.categories.categories"
+        :total-amount="spendingStore.categories.totalAmount"
+        :trends="spendingStore.trends.trends"
+        :loading="spendingStore.periodLoading"
+      />
 
       <p class="spending-view__disclaimer">
         These figures use demo data and are for illustration only.

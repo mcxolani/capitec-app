@@ -22,6 +22,28 @@ export type SpendingSummary = {
   }
 }
 
+export type SpendingCategories = {
+  dateRange: { startDate: string; endDate: string }
+  totalAmount: number
+  categories: {
+    name: string
+    amount: number
+    percentage: number
+    transactionCount: number
+    color: string
+    icon: string
+  }[]
+}
+
+export type SpendingTrends = {
+  trends: {
+    month: string
+    totalSpent: number
+    transactionCount: number
+    averageTransaction: number
+  }[]
+}
+
 export type SpendingFilters = {
   categories: { name: string; color: string; icon: string }[]
   dateRangePresets: { label: string; value: SpendingPeriod }[]

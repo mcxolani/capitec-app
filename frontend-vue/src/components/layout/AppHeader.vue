@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Landmark, Menu, X } from '@lucide/vue'
+import { Menu, X } from '@lucide/vue'
 import Button from 'primevue/button'
 
 const route = useRoute()
@@ -23,7 +23,7 @@ function isActive(path: string) {
   <header class="site-header">
     <div class="site-header__content">
       <RouterLink to="/" class="site-brand" aria-label="Capitec home">
-        <Landmark :size="25" aria-hidden="true" />
+         <img src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg" alt="" aria-hidden="true" />
         <span>Capitec</span>
       </RouterLink>
 
