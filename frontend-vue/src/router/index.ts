@@ -11,12 +11,7 @@ const router = createRouter({
     },
     {
       path: '/spending-insights',
-      component: () => import('@/views/FeaturePlaceholderView.vue'),
-      props: {
-        eyebrow: 'Spending tools',
-        title: 'Spending insights',
-        description: 'Explore spending patterns and see how your monthly budgets are doing.',
-      },
+      component: () => import('@/views/SpendingInsightsView.vue'),
     },
     { path: '/:pathMatch(.*)*', component: () => import('@/views/NotFoundView.vue') },
   ],
