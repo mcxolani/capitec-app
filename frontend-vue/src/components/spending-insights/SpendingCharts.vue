@@ -19,8 +19,11 @@ const props = defineProps<{
   categories: SpendingCategories['categories']
   totalAmount: number
   trends: SpendingTrends['trends']
+  selectedCategory: string
   loading: boolean
 }>()
+
+const emit = defineEmits<{ selectCategory: [category: string] }>()
 
 const categoryOption = computed<EChartsOption>(() => ({
   aria: {
@@ -109,15 +112,24 @@ function formatMonth(value: string) {
         >
         <ul v-if="categories.length" class="spending-category-list" aria-label="Category totals">
           <li v-for="category in categories" :key="category.name">
-            <span class="spending-category-list__name">
-              <span
-                class="spending-category-list__dot"
-                :style="{ backgroundColor: category.color }"
-              ></span>
-              {{ category.name }}
-            </span>
-            <span>{{ category.percentage }}%</span>
-            <strong>{{ formatSpendingCurrency(category.amount) }}</strong>
+            <button
+              type="button"
+              class="spending-category-list__button"
+              :aria-pressed="selectedCategory === category.name"
+              @click="
+                emit('selectCategory', selectedCategory === category.name ? '' : category.name)
+              "
+            >
+              <span class="spending-category-list__name">
+                <span
+                  class="spending-category-list__dot"
+                  :style="{ backgroundColor: category.color }"
+                ></span>
+                {{ category.name }}
+              </span>
+              <span>{{ category.percentage }}%</span>
+              <strong>{{ formatSpendingCurrency(category.amount) }}</strong>
+            </button>
           </li>
         </ul>
       </template>
@@ -200,12 +212,25 @@ function formatMonth(value: string) {
   list-style: none;
 }
 
-.spending-category-list li {
+.spending-category-list__button {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 0.8rem;
+  padding: 0.35rem 0.45rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
   color: var(--color-muted);
+  font: inherit;
   font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.spending-category-list__button:hover,
+.spending-category-list__button[aria-pressed='true'] {
+  background: #f1f5ff;
 }
 
 .spending-category-list__name {

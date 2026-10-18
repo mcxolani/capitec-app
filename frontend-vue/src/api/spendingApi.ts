@@ -18,14 +18,20 @@ export function getSpendingFilters() {
   return request<SpendingFilters>(`${customerUrl}/filters`)
 }
 
-export function getSpendingSummary(period: SpendingPeriod) {
-  return request<SpendingSummary>(`${customerUrl}/spending/summary?period=${period}`)
+export function getSpendingSummary(period: SpendingPeriod, category?: string) {
+  const params = new URLSearchParams({ period })
+  if (category) params.set('category', category)
+  return request<SpendingSummary>(`${customerUrl}/spending/summary?${params}`)
 }
 
-export function getSpendingCategories(period: SpendingPeriod) {
-  return request<SpendingCategories>(`${customerUrl}/spending/categories?period=${period}`)
+export function getSpendingCategories(period: SpendingPeriod, category?: string) {
+  const params = new URLSearchParams({ period })
+  if (category) params.set('category', category)
+  return request<SpendingCategories>(`${customerUrl}/spending/categories?${params}`)
 }
 
-export function getSpendingTrends(months = 12) {
-  return request<SpendingTrends>(`${customerUrl}/spending/trends?months=${months}`)
+export function getSpendingTrends(months = 12, category?: string) {
+  const params = new URLSearchParams({ months: String(months) })
+  if (category) params.set('category', category)
+  return request<SpendingTrends>(`${customerUrl}/spending/trends?${params}`)
 }

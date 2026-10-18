@@ -27,7 +27,7 @@ export const useSpendingStore = defineStore('spending', () => {
   const error = ref('')
   const periodError = ref('')
 
-  async function load(period: SpendingPeriod) {
+  async function load(period: SpendingPeriod, category?: string) {
     loading.value = true
     error.value = ''
 
@@ -41,9 +41,9 @@ export const useSpendingStore = defineStore('spending', () => {
       ] = await Promise.all([
         getCustomerProfile(),
         getSpendingFilters(),
-        getSpendingSummary(period),
-        getSpendingCategories(period),
-        getSpendingTrends(),
+        getSpendingSummary(period, category),
+        getSpendingCategories(period, category),
+        getSpendingTrends(12, category),
       ])
       profile.value = customerProfile
       filters.value = spendingFilters
@@ -57,17 +57,19 @@ export const useSpendingStore = defineStore('spending', () => {
     }
   }
 
-  async function loadPeriod(period: SpendingPeriod) {
+  async function loadPeriod(period: SpendingPeriod, category?: string) {
     periodLoading.value = true
     periodError.value = ''
 
     try {
-      const [spendingSummary, spendingCategories] = await Promise.all([
-        getSpendingSummary(period),
-        getSpendingCategories(period),
+      const [spendingSummary, spendingCategories, spendingTrends] = await Promise.all([
+        getSpendingSummary(period, category),
+        getSpendingCategories(period, category),
+        getSpendingTrends(12, category),
       ])
       summary.value = spendingSummary
       categories.value = spendingCategories
+      trends.value = spendingTrends
     } catch {
       periodError.value = 'Could not update spending insights for this period. Please try again.'
     } finally {

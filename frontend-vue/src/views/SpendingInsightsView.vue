@@ -26,6 +26,25 @@ const period = computed<SpendingPeriod>({
   },
 })
 
+const category = computed<string>({
+  get: () =>
+    spendingStore.filters?.categories.find((option) => option.name === route.query.category)
+      ?.name ?? '',
+  set: (value) => {
+    void router.replace({
+      query: { ...route.query, category: value || undefined },
+    })
+  },
+})
+
+const categoryOptions = computed(() => [
+  { label: 'All categories', value: '' },
+  ...(spendingStore.filters?.categories.map((option) => ({
+    label: option.name,
+    value: option.name,
+  })) ?? []),
+])
+
 const metrics = computed(() => {
   const summary = spendingStore.summary
   if (!summary) return []
@@ -62,8 +81,12 @@ function changeText(change: number | null) {
   return `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than the previous period`
 }
 
-watch(period, (value) => void spendingStore.loadPeriod(value))
-onMounted(() => spendingStore.load(period.value))
+watch(
+  [period, category],
+  ([selectedPeriod, selectedCategory]) =>
+    void spendingStore.loadPeriod(selectedPeriod, selectedCategory || undefined),
+)
+onMounted(() => spendingStore.load(period.value, category.value || undefined))
 </script>
 
 <template>
@@ -84,7 +107,11 @@ onMounted(() => spendingStore.load(period.value))
 
     <div v-else-if="spendingStore.error" class="spending-view__error">
       <Message severity="error" :closable="false">{{ spendingStore.error }}</Message>
-      <Button label="Try again" outlined @click="spendingStore.load(period)" />
+      <Button
+        label="Try again"
+        outlined
+        @click="spendingStore.load(period, category || undefined)"
+      />
     </div>
 
     <template v-else>
@@ -94,14 +121,24 @@ onMounted(() => spendingStore.load(period.value))
             <h2 id="spending-overview-title">Your overview</h2>
             <p>Figures for the selected period, compared with the previous one.</p>
           </div>
-          <Select
-            v-model="period"
-            class="spending-period"
-            :options="spendingStore.filters?.dateRangePresets"
-            option-label="label"
-            option-value="value"
-            aria-label="Spending period"
-          />
+          <div class="spending-overview__filters">
+            <Select
+              v-model="period"
+              class="spending-overview__filter"
+              :options="spendingStore.filters?.dateRangePresets"
+              option-label="label"
+              option-value="value"
+              aria-label="Spending period"
+            />
+            <Select
+              v-model="category"
+              class="spending-overview__filter"
+              :options="categoryOptions"
+              option-label="label"
+              option-value="value"
+              aria-label="Spending category"
+            />
+          </div>
         </div>
 
         <Message v-if="spendingStore.periodError" severity="warn" :closable="false">
@@ -129,7 +166,9 @@ onMounted(() => spendingStore.load(period.value))
         :categories="spendingStore.categories.categories"
         :total-amount="spendingStore.categories.totalAmount"
         :trends="spendingStore.trends.trends"
+        :selected-category="category"
         :loading="spendingStore.periodLoading"
+        @select-category="category = $event"
       />
 
       <p class="spending-view__disclaimer">
@@ -212,9 +251,15 @@ onMounted(() => spendingStore.load(period.value))
   font-size: 0.88rem;
 }
 
-.spending-period {
+.spending-overview__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.spending-overview__filter {
   width: 12rem;
-  flex: 0 0 12rem;
+  flex: 0 1 12rem;
 }
 
 .spending-metrics {
@@ -283,7 +328,11 @@ onMounted(() => spendingStore.load(period.value))
     flex-direction: column;
   }
 
-  .spending-period {
+  .spending-overview__filters {
+    width: 100%;
+  }
+
+  .spending-overview__filter {
     width: 100%;
     flex-basis: auto;
   }
