@@ -17,7 +17,7 @@ The home photograph is bundled at `public/images/banking-tools.webp`, sourced fr
 - Search for an address or place (Google Places autocomplete), or use the browser's current location.
 - Filter branches within a chosen radius (1, 5, 10, 25 or 50 km), shown as a circle on the map.
 - Results are sorted by straight-line distance from the chosen point.
-- Branch data is mocked in [`src/api/branchApi.ts`](src/api/branchApi.ts) (branches in Gauteng, Cape Town and Durban, with a simulated network delay). Replace `fetchBranches()` to connect a real API.
+- Branch data loads from the Spring Boot API at `/api/branches`; the Vite dev server proxies `/api` to `http://localhost:8081` by default. Start the backend with the instructions in [`backend/springboot/README.md`](backend/springboot/README.md) before using the branch locator. If the backend runs on another port, set `VITE_API_PROXY_TARGET` when starting Vite, for example `VITE_API_PROXY_TARGET=http://localhost:18081 npm run dev`.
 
 ### Loan eligibility simulator (`/loan-eligibility`)
 
@@ -107,7 +107,7 @@ Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testi
 
 ```
 src/
-  api/          mock branch, loan and spending APIs
+  api/          branch API client, mock loan and spending APIs
   components/
     layout/     header with responsive menu, footer, page layout
     branch-locator/

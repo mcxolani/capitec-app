@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockGeolocation } from '@/test/geolocation'
+import type { Branch } from '@/types/branch'
 
 // the map itself needs a real browser and API key, so stub it out
 vi.mock('@vis.gl/react-google-maps', () => ({
@@ -10,10 +11,29 @@ vi.mock('@vis.gl/react-google-maps', () => ({
   useMapsLibrary: () => null,
 }))
 vi.mock('@/components/branch-locator/BranchMap', () => ({ default: () => null }))
+vi.mock('@/api/branchApi', () => ({ fetchBranches: vi.fn() }))
+
+const branch = (id: string, name: string, lat: number, lng: number): Branch => ({
+  id,
+  name,
+  address: `${name} address`,
+  position: { lat, lng },
+  hours: 'Mon–Fri 08:30–16:30',
+})
+
+const BRANCHES = [
+  branch('va-waterfront', 'V&A Waterfront', -33.9036, 18.4207),
+  branch('cape-town-cbd', 'Cape Town CBD', -33.9221, 18.4196),
+  branch('sandton-city', 'Sandton City', -26.1076, 28.0567),
+  branch('umhlanga', 'Umhlanga', -29.7276, 31.0663),
+  branch('durban-cbd', 'Durban CBD', -29.858, 31.023),
+]
 
 // API_KEY is read when the module loads, so import it fresh after setting env
 const renderPage = async () => {
   vi.resetModules()
+  const { fetchBranches } = await import('@/api/branchApi')
+  vi.mocked(fetchBranches).mockResolvedValue(BRANCHES)
   const { default: BranchLocatorPage } = await import('./BranchLocatorPage')
   render(<BranchLocatorPage />)
 }
