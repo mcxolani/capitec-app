@@ -33,3 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker build --build-arg VITE_GOOGLE_MAPS_API_KEY=ci-placeholder -t capitec-app .
+      - run: docker build -t capitec-api ./backend/springboot
+      - run: docker compose config --quiet
+        env:
+          VITE_GOOGLE_MAPS_API_KEY: ci-placeholder

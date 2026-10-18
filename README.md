@@ -61,15 +61,37 @@ Input validation lives in the filter controls and URL parser. The local mock API
 
 ## Getting started
 
-Requirements: Node.js 22+ and npm.
+### Run the frontend and API together
+
+```sh
+cp .env.example .env.local # set VITE_GOOGLE_MAPS_API_KEY in this file
+docker compose --env-file .env.local up --build
+```
+
+Open the app at `http://localhost:8080`. Spring Boot runs at `http://localhost:8081`, with Swagger UI at `http://localhost:8081/swagger-ui/index.html`. Stop both containers with `docker compose --env-file .env.local down`.
+
+Docker Compose requires Docker Engine and the Compose plugin. The Maps API key is required to use the branch map. To avoid host port conflicts, set `PORT` for the web app or `API_PORT` for Spring Boot, for example `PORT=8082 API_PORT=18082 docker compose --env-file .env.local up --build`.
+
+### Run locally for development
+
+Requirements: Node.js 22+, npm, Java 21 and Maven.
+
+Start the backend in one terminal:
+
+```sh
+mvn -f backend/springboot/pom.xml spring-boot:run
+```
+
+Then start the frontend in another:
 
 ```sh
 npm install
-cp .env.example .env.local   # then fill in the values below
+cp .env.example .env.local # set VITE_GOOGLE_MAPS_API_KEY in this file
 npm run dev
 ```
 
-The dev server runs at `http://localhost:5173`.
+Vite runs at `http://localhost:5173` and proxies `/api` to Spring Boot on port `8081`.
+If you start Spring Boot on another port, point Vite at it, for example `VITE_API_PROXY_TARGET=http://localhost:18081 npm run dev`.
 
 ### Environment variables
 
@@ -107,7 +129,7 @@ Tests use [Vitest](https://vitest.dev) and [React Testing Library](https://testi
 
 ```
 src/
-  api/          branch API client, mock loan and spending APIs
+  api/          branch, loan and spending API clients and mock spending fixtures
   components/
     layout/     header with responsive menu, footer, page layout
     branch-locator/
@@ -133,31 +155,23 @@ Husky installs the hooks on `npm install`. The pre-commit hook runs [lint-staged
 
 Fixes are added back to the same commit. The commit is blocked if ESLint finds an error it can't fix or a related test fails.
 
-GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on pull requests and pushes to `main`: format check, lint, type check, tests with coverage, production build, and a Docker image build.
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on pull requests and pushes to `main`: format check, lint, type check, tests with coverage, production build, both Docker image builds and a Compose configuration check.
 
-## Production Docker image
+## Docker deployment
 
-The API key is passed as a build argument, because Vite builds it into the JavaScript. `.env*` files are excluded from the Docker build context. The build stops if the key is missing.
+The Compose setup builds the React app and Spring Boot API as separate containers. Nginx serves the frontend and proxies `/api` requests to the API container, so the browser uses the same URLs in Docker and local development. The API port is also published directly for Swagger UI.
 
-With Docker Compose, reading the values from `.env.local`:
+The frontend build needs the Maps API key because Vite bundles `VITE_*` values into the JavaScript. `.env*` files are excluded from the Docker build context; Compose passes the key as a build argument.
+
+To rebuild and start both services:
 
 ```sh
 docker compose --env-file .env.local up --build
 ```
 
-Or with plain Docker:
+Set `PORT` or `API_PORT` to publish either service on another host port. The API image is built from [`backend/springboot/Dockerfile`](backend/springboot/Dockerfile), runs as an unprivileged user, and exposes port `8081` inside Compose.
 
-```sh
-docker build \
-  --build-arg VITE_GOOGLE_MAPS_API_KEY=your-key \
-  --build-arg VITE_GOOGLE_MAP_ID=your-map-id \
-  -t capitec-app .
-docker run --rm -p 8080:8080 capitec-app
-```
-
-Open `http://localhost:8080`. Set `PORT` to publish on a different host port with Compose (for example `PORT=8081 docker compose --env-file .env.local up --build`).
-
-The image builds the app in a Node.js stage and serves it with unprivileged Nginx on port 8080. Nginx:
+The web image builds the app in a Node.js stage and serves it with unprivileged Nginx on port 8080. Nginx:
 
 - falls back to `index.html`, so direct visits to client-side routes work
 - caches the fingerprinted files in `/assets/` for a year, and makes browsers revalidate `index.html` so new deploys show up straight away

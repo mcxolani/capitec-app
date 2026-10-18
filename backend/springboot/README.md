@@ -1,5 +1,18 @@
 # Spring Boot API
 
+## Run with Docker
+
+From the repository root, build and run the API container:
+
+```sh
+docker build -t capitec-api ./backend/springboot
+docker run --rm -p 8081:8081 capitec-api
+```
+
+For the frontend and API together, use the root [`compose.yaml`](../../compose.yaml) instructions in the main [README](../../README.md).
+
+## Run with Maven
+
 From the repository root, run the API on its default port, `8081`:
 
 ```sh
