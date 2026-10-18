@@ -2,6 +2,30 @@
 
 A standalone Vue 3 app built with the Composition API and Pinia. Its views, components, styles, and API modules are organized for Vue. It calls the Spring Boot API through the same `/api/...` routes used by the other frontend.
 
+## Run the demo with Docker
+
+Requirements: Docker Engine and the Docker Compose plugin.
+
+From the repository root, build and start the Vue app and Spring Boot API:
+
+```sh
+docker compose -f frontend-vue/compose.yaml up --build
+```
+
+Open the Vue app at `http://localhost:8082`. Its API is available at `http://localhost:8083`, with Swagger UI at `http://localhost:8083/swagger-ui/index.html`. Nginx serves the app and forwards `/api` requests to Spring Boot, so the browser only needs the Vue URL. These ports let the Vue demo run beside the React demo.
+
+Stop the demo with:
+
+```sh
+docker compose -f frontend-vue/compose.yaml down
+```
+
+If those ports are already in use, choose others when starting it:
+
+```sh
+VUE_PORT=8083 API_PORT=18081 docker compose -f frontend-vue/compose.yaml up --build
+```
+
 ## Run locally
 
 Requirements: Node.js 22.18+, npm, and the Spring Boot API.

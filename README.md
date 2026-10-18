@@ -72,6 +72,8 @@ Open the app at `http://localhost:8080`. Spring Boot runs at `http://localhost:8
 
 Docker Compose requires Docker Engine and the Compose plugin. The Maps API key is required to use the branch map. To avoid host port conflicts, set `PORT` for the web app or `API_PORT` for Spring Boot, for example `PORT=8082 API_PORT=18082 docker compose --env-file .env.local up --build`.
 
+To run the standalone Vue demo with Spring Boot, use [`frontend-vue/README.md`](frontend-vue/README.md): `docker compose -f frontend-vue/compose.yaml up --build`. It opens at `http://localhost:8082` and does not need the React app's Google Maps key.
+
 ### Run locally for development
 
 Requirements: Node.js 22+, npm, Java 21 and Maven.
