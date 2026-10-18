@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { createRef } from 'react'
 import { describe, expect, it } from 'vitest'
 import type { EligibilityRequest } from '@/types/loan'
@@ -89,13 +89,6 @@ describe('LoanResult', () => {
     expect(screen.queryByText('Monthly repayment')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Affordability' })).toBeInTheDocument()
     expect(container.querySelector('.loan-result')).toHaveClass('loan-result--declined')
-  })
-
-  it('always says this is an estimate, not a credit decision', () => {
-    renderResult(150000)
-    const region = screen.getByRole('region', { name: /eligible/ })
-
-    expect(within(region).getByText(/not a credit decision or a loan offer/)).toBeInTheDocument()
   })
 
   it('lets the page focus the heading', () => {

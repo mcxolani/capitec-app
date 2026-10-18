@@ -13,7 +13,6 @@ export default function Footer() {
           <Link to="/loan-eligibility">Check loan eligibility</Link>
           <Link to="/spending-insights">Explore spending</Link>
         </nav>
-        <small>Demo application. Loan estimates and spending figures are illustrative.</small>
       </div>
     </footer>
   )

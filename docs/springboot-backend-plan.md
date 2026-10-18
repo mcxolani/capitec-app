@@ -83,4 +83,4 @@ The existing spending UI also filters summary, trends, and goals by category and
 
 ## Out of scope
 
-Real customer accounts, credit bureau checks, saved transactions, database migrations, authentication, and deployment hardening. This remains demo data and must not be presented as a real credit decision.
+Real customer accounts, credit bureau checks, saved transactions, database migrations, authentication, and deployment hardening.

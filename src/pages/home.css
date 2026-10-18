@@ -99,12 +99,6 @@
   line-height: 1.7;
 }
 
-.home-page__disclaimer {
-  margin: 1rem 0 0;
-  color: var(--color-muted);
-  font-size: 0.8rem;
-}
-
 @media (max-width: 760px) {
   .home-page__header,
   .home-page__body {

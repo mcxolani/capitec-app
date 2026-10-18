@@ -59,7 +59,7 @@ export default function LoanEligibilityPage() {
       <h1>Loan Eligibility Simulator</h1>
       <p className="loan-page__intro">
         Tell us about your income, expenses and the loan you want, and we’ll estimate what you could
-        qualify for. This won’t affect your credit record.
+        qualify for.
       </p>
 
       {rulesError ? (

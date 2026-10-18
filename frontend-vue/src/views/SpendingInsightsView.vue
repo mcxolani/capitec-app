@@ -170,10 +170,6 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
         :loading="spendingStore.periodLoading"
         @select-category="category = $event"
       />
-
-      <p class="spending-view__disclaimer">
-        These figures use demo data and are for illustration only.
-      </p>
     </template>
   </section>
 </template>
@@ -314,12 +310,6 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
 .spending-metric small {
   color: var(--color-muted);
   font-size: 0.73rem;
-}
-
-.spending-view__disclaimer {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.76rem;
 }
 
 @media (max-width: 620px) {

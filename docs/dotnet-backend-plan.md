@@ -81,4 +81,4 @@ The UI passes category filters to summary, trends, and goals, and lets custom da
 
 ## Out of scope
 
-Real account data, credit checks, database storage, authentication, microservices, and production financial decisions. Keep all examples clearly marked as demo data.
+Real account data, credit checks, database storage, authentication, microservices, and production financial decisions.

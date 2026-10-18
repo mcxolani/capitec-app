@@ -10,7 +10,6 @@
         <RouterLink to="/loan-eligibility">Loans</RouterLink>
         <RouterLink to="/spending-insights">Spending insights</RouterLink>
       </nav>
-      <small>Demo application. Loan estimates and spending figures are illustrative.</small>
     </div>
   </footer>
 </template>
@@ -60,13 +59,6 @@
 .site-footer a:hover {
   color: var(--color-blue-dark);
   text-decoration: underline;
-}
-
-.site-footer small {
-  flex: 1 0 100%;
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--color-border);
-  font-size: 0.75rem;
 }
 
 @media (max-width: 720px) {

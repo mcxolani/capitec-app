@@ -73,7 +73,6 @@ const tools = [
           </template>
         </Card>
       </div>
-      <p class="tool-section__note">Loan estimates and spending figures use demo data.</p>
     </section>
   </div>
 </template>
@@ -293,12 +292,6 @@ const tools = [
 
 .tool-card__link:hover {
   color: var(--color-blue);
-}
-
-.tool-section__note {
-  margin: 1rem 0 0;
-  color: var(--color-muted);
-  font-size: 0.8rem;
 }
 
 @media (max-width: 760px) {

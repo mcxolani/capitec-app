@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { BadgeCheck, Clock3, CreditCard, Info, Wallet } from '@lucide/vue'
+import { BadgeCheck, Clock3, CreditCard, Wallet } from '@lucide/vue'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Column from 'primevue/column'
@@ -461,10 +461,6 @@ onMounted(() => loanStore.load())
                 <BadgeCheck :size="17" aria-hidden="true" />
                 Check eligibility
               </Button>
-              <p class="loan-form__note">
-                <Info :size="15" aria-hidden="true" /> This estimate uses demo data and won’t affect
-                your credit record.
-              </p>
             </form>
           </template>
         </Card>
@@ -606,10 +602,6 @@ onMounted(() => loanStore.load())
                 </DataTable>
               </template>
             </Card>
-
-            <p class="loan-view__disclaimer">
-              This is an estimate based on simulated data, not a credit decision or a loan offer.
-            </p>
           </template>
 
           <Card v-else-if="!loanStore.submitError" class="loan-result-placeholder">
@@ -830,20 +822,6 @@ onMounted(() => loanStore.load())
   border-radius: 12px;
 }
 
-.loan-form__note {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.4rem;
-  margin: -0.6rem 0 0;
-  color: var(--color-muted);
-  font-size: 0.76rem;
-}
-
-.loan-form__note svg {
-  flex: 0 0 auto;
-  color: var(--color-blue);
-}
-
 .loan-outcome {
   display: flex;
   min-width: 0;
@@ -978,12 +956,6 @@ onMounted(() => loanStore.load())
 
 .loan-schedule__summary svg {
   color: var(--color-blue);
-}
-
-.loan-view__disclaimer {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.76rem;
 }
 
 .loan-result-placeholder {

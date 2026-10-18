@@ -26,9 +26,9 @@ Customers enter their income, expenses and the loan they want, and get an estima
 - Loan products, validation rules, eligibility checks and rate calculations load from the Spring Boot API.
 - The form validates against the rules the API returns and shows every error at once. Errors and focus are wired up for screen readers.
 - Results come in three forms: eligible, over budget (with the largest affordable amount suggested instead), and declined, each with a plain-language reason.
-- Every result says it's an estimate from simulated data, not a credit decision or loan offer. The approval likelihood is capped at 95%.
+- The approval likelihood score is capped at 95%.
 
-The lending rules live in [`src/utils/loanEligibility.ts`](src/utils/loanEligibility.ts), with every threshold as a named constant. They're illustrative, not a real credit policy:
+The lending rules live in [`src/utils/loanEligibility.ts`](src/utils/loanEligibility.ts), with every threshold as a named constant:
 
 | Rule                          | Value                                                                                                                                    |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -45,7 +45,7 @@ Where the spec's example numbers are inconsistent, the code follows the standard
 
 ### Spending insights (`/spending-insights`)
 
-Explore a fictional customer's spending with summary cards, a category donut, monthly trends, budgets and a sortable transaction list. The dashboard uses the same layout, controls, white panels and responsive styling as the other pages.
+Explore a customer's spending with summary cards, a category donut, monthly trends, budgets and a sortable transaction list. The dashboard uses the same layout, controls, white panels and responsive styling as the other pages.
 
 - All seven spending endpoints load from the Spring Boot API. The dashboard sends the applicable period, custom dates, category, sort order, page offset or month count; the profile, filter options, budgets and analytics use the same backend dataset. `createSpendingApi` remains available to provide deterministic mock data in tests.
 - Period, category, custom dates and transaction sort are stored in the URL. Custom dates override the preset; selecting a preset clears the dates. Dates are inclusive in `Africa/Johannesburg`. Invalid URL dates fall back to the selected preset with a visible explanation.
