@@ -9,6 +9,7 @@ import Card from 'primevue/card'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import Message from 'primevue/message'
+import Select from 'primevue/select'
 import VChart from 'vue-echarts'
 import type { SpendingCategories, SpendingTrends } from '@/types/spending'
 import { formatSpendingCurrency } from '@/utils/currency'
@@ -21,9 +22,19 @@ const props = defineProps<{
   trends: SpendingTrends['trends']
   selectedCategory: string
   loading: boolean
+  months: number
 }>()
 
-const emit = defineEmits<{ selectCategory: [category: string] }>()
+const emit = defineEmits<{
+  selectCategory: [category: string]
+  selectMonths: [months: number]
+}>()
+
+const monthOptions = [
+  { label: '6 months', value: 6 },
+  { label: '12 months', value: 12 },
+  { label: '24 months', value: 24 },
+]
 
 const categoryOption = computed<EChartsOption>(() => ({
   aria: {
@@ -136,7 +147,19 @@ function formatMonth(value: string) {
     </Card>
 
     <Card class="spending-chart-card">
-      <template #title>Monthly spending</template>
+      <template #title>
+        <div class="spending-chart-card__title">
+          <span>Monthly spending</span>
+          <Select
+            :model-value="months"
+            :options="monthOptions"
+            option-label="label"
+            option-value="value"
+            aria-label="Trend range"
+            @update:model-value="emit('selectMonths', $event)"
+          />
+        </div>
+      </template>
       <template #content>
         <p class="spending-chart-card__description">See how your spending has changed over time.</p>
         <VChart
@@ -191,6 +214,19 @@ function formatMonth(value: string) {
   margin: 0 0 0.5rem;
   color: var(--color-muted);
   font-size: 0.82rem;
+}
+
+.spending-chart-card__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.spending-chart-card__title :deep(.p-select) {
+  width: 9rem;
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .spending-chart {
@@ -256,6 +292,15 @@ function formatMonth(value: string) {
 @media (max-width: 620px) {
   .spending-chart-card {
     flex-basis: 100%;
+  }
+
+  .spending-chart-card__title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .spending-chart-card__title :deep(.p-select) {
+    width: 100%;
   }
 }
 </style>

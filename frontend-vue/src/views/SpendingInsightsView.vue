@@ -1,27 +1,52 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Clock3, CreditCard, Info, Wallet } from '@lucide/vue'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
+import ProgressBar from 'primevue/progressbar'
 import ProgressSpinner from 'primevue/progressspinner'
 import Select from 'primevue/select'
 import SpendingCharts from '@/components/spending-insights/SpendingCharts.vue'
+import SpendingTransactions from '@/components/spending-insights/SpendingTransactions.vue'
 import { useSpendingStore } from '@/stores/spendingStore'
-import type { SpendingPeriod } from '@/types/spending'
+import type { SpendingDateRange, SpendingPeriod, SpendingSort } from '@/types/spending'
 import { formatSpendingCurrency } from '@/utils/currency'
 
 const spendingStore = useSpendingStore()
 const route = useRoute()
 const router = useRouter()
 const periods: SpendingPeriod[] = ['7d', '30d', '90d', '1y']
+const months = ref(12)
+const draftStartDate = ref(typeof route.query.startDate === 'string' ? route.query.startDate : '')
+const draftEndDate = ref(typeof route.query.endDate === 'string' ? route.query.endDate : '')
+
+const startDate = computed(() =>
+  typeof route.query.startDate === 'string' ? route.query.startDate : '',
+)
+const endDate = computed(() => (typeof route.query.endDate === 'string' ? route.query.endDate : ''))
+const dateRange = computed<SpendingDateRange | undefined>(() =>
+  startDate.value && endDate.value
+    ? { startDate: startDate.value, endDate: endDate.value }
+    : undefined,
+)
+const canApplyDateRange = computed(() =>
+  Boolean(draftStartDate.value && draftEndDate.value && draftStartDate.value <= draftEndDate.value),
+)
 
 const period = computed<SpendingPeriod>({
   get: () => periods.find((value) => value === route.query.period) ?? '30d',
   set: (value) => {
+    draftStartDate.value = ''
+    draftEndDate.value = ''
     void router.replace({
-      query: { ...route.query, period: value === '30d' ? undefined : value },
+      query: {
+        ...route.query,
+        period: value === '30d' ? undefined : value,
+        startDate: undefined,
+        endDate: undefined,
+      },
     })
   },
 })
@@ -33,6 +58,18 @@ const category = computed<string>({
   set: (value) => {
     void router.replace({
       query: { ...route.query, category: value || undefined },
+    })
+  },
+})
+
+const sortBy = computed<SpendingSort>({
+  get: () =>
+    (['date_desc', 'date_asc', 'amount_desc', 'amount_asc'] as const).find(
+      (value) => value === route.query.sortBy,
+    ) ?? 'date_desc',
+  set: (value) => {
+    void router.replace({
+      query: { ...route.query, sortBy: value === 'date_desc' ? undefined : value },
     })
   },
 })
@@ -81,12 +118,68 @@ function changeText(change: number | null) {
   return `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than the previous period`
 }
 
+function loadPeriod() {
+  void spendingStore.loadPeriod(
+    period.value,
+    category.value || undefined,
+    dateRange.value,
+    months.value,
+    sortBy.value,
+  )
+}
+
+function applyDateRange() {
+  if (!canApplyDateRange.value) return
+  void router.replace({
+    query: {
+      ...route.query,
+      startDate: draftStartDate.value,
+      endDate: draftEndDate.value,
+    },
+  })
+}
+
+function clearDateRange() {
+  draftStartDate.value = ''
+  draftEndDate.value = ''
+  void router.replace({ query: { ...route.query, startDate: undefined, endDate: undefined } })
+}
+
+function loadMoreTransactions() {
+  void spendingStore.loadTransactions(
+    period.value,
+    category.value || undefined,
+    dateRange.value,
+    sortBy.value,
+    true,
+  )
+}
+
+watch([period, category, startDate, endDate], loadPeriod)
 watch(
-  [period, category],
-  ([selectedPeriod, selectedCategory]) =>
-    void spendingStore.loadPeriod(selectedPeriod, selectedCategory || undefined),
+  sortBy,
+  () =>
+    void spendingStore.loadTransactions(
+      period.value,
+      category.value || undefined,
+      dateRange.value,
+      sortBy.value,
+    ),
 )
-onMounted(() => spendingStore.load(period.value, category.value || undefined))
+watch(months, (value) => void spendingStore.loadTrends(value, category.value || undefined))
+watch([startDate, endDate], ([start, end]) => {
+  draftStartDate.value = start
+  draftEndDate.value = end
+})
+onMounted(() =>
+  spendingStore.load(
+    period.value,
+    category.value || undefined,
+    dateRange.value,
+    months.value,
+    sortBy.value,
+  ),
+)
 </script>
 
 <template>
@@ -110,7 +203,7 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
       <Button
         label="Try again"
         outlined
-        @click="spendingStore.load(period, category || undefined)"
+        @click="spendingStore.load(period, category || undefined, dateRange, months, sortBy)"
       />
     </div>
 
@@ -141,6 +234,22 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
           </div>
         </div>
 
+        <form class="spending-date-range" @submit.prevent="applyDateRange">
+          <div class="spending-date-range__fields">
+            <label>
+              <span>From</span>
+              <input v-model="draftStartDate" type="date" aria-label="Start date" />
+            </label>
+            <label>
+              <span>To</span>
+              <input v-model="draftEndDate" type="date" aria-label="End date" />
+            </label>
+            <Button label="Apply dates" type="submit" :disabled="!canApplyDateRange" />
+            <Button v-if="dateRange" label="Clear" type="button" text @click="clearDateRange" />
+          </div>
+          <small>Choose a complete date range to use it instead of the selected preset.</small>
+        </form>
+
         <Message v-if="spendingStore.periodError" severity="warn" :closable="false">
           {{ spendingStore.periodError }}
         </Message>
@@ -168,7 +277,52 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
         :trends="spendingStore.trends.trends"
         :selected-category="category"
         :loading="spendingStore.periodLoading"
+        :months="months"
         @select-category="category = $event"
+        @select-months="months = $event"
+      />
+
+      <section class="spending-goals" aria-labelledby="spending-goals-title">
+        <div class="spending-section-heading">
+          <div>
+            <h2 id="spending-goals-title">Monthly budgets</h2>
+            <p>Track how much of each category budget you have used.</p>
+          </div>
+        </div>
+        <div v-if="spendingStore.goals?.goals.length" class="spending-goals__list">
+          <Card v-for="goal in spendingStore.goals.goals" :key="goal.id" class="spending-goal">
+            <template #content>
+              <div class="spending-goal__heading">
+                <strong>{{ goal.category }}</strong>
+                <span :class="['spending-goal__status', `is-${goal.status.replace('_', '-')}`]">
+                  {{ goal.status.replace('_', ' ') }}
+                </span>
+              </div>
+              <ProgressBar :value="Math.min(goal.percentageUsed, 100)" />
+              <div class="spending-goal__details">
+                <span>{{ formatSpendingCurrency(goal.currentSpent) }} spent</span>
+                <span
+                  >{{ Math.round(goal.percentageUsed) }}% of
+                  {{ formatSpendingCurrency(goal.monthlyBudget) }}</span
+                >
+              </div>
+              <small>{{ goal.daysRemaining }} days remaining</small>
+            </template>
+          </Card>
+        </div>
+        <Message v-else severity="info" :closable="false"
+          >No budget goals for this category.</Message
+        >
+      </section>
+
+      <SpendingTransactions
+        :transactions="spendingStore.transactions"
+        :has-more="spendingStore.hasMoreTransactions"
+        :loading="spendingStore.transactionLoading"
+        :error="spendingStore.transactionError"
+        :sort-by="sortBy"
+        @change-sort="sortBy = $event"
+        @load-more="loadMoreTransactions"
       />
     </template>
   </section>
@@ -258,6 +412,132 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
   flex: 0 1 12rem;
 }
 
+.spending-date-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fafbfd;
+}
+
+.spending-date-range__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+.spending-date-range label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.spending-date-range input {
+  min-height: 2.65rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ink);
+}
+
+.spending-date-range input:focus {
+  border-color: var(--color-blue);
+  outline: 2px solid rgb(36 99 235 / 16%);
+}
+
+.spending-date-range small {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.spending-section-heading h2 {
+  margin: 0;
+  color: var(--color-blue-dark);
+  font-size: 1.2rem;
+}
+
+.spending-section-heading p {
+  margin: 0.25rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+.spending-goals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.spending-goals__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.spending-goal {
+  min-width: 0;
+  flex: 1 1 17rem;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgb(32 49 59 / 5%);
+}
+
+.spending-goal :deep(.p-card-body) {
+  padding: 1rem;
+}
+
+.spending-goal :deep(.p-card-content) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0;
+}
+
+.spending-goal__heading,
+.spending-goal__details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.spending-goal__heading strong {
+  color: var(--color-blue-dark);
+}
+
+.spending-goal__status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: #eaf7ef;
+  color: #267346;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.spending-goal__status.is-warning {
+  background: #fff4dc;
+  color: #8a5a00;
+}
+
+.spending-goal__status.is-over-budget {
+  background: #ffebeb;
+  color: #a12c2c;
+}
+
+.spending-goal__details,
+.spending-goal small {
+  color: var(--color-muted);
+  font-size: 0.76rem;
+}
+
 .spending-metrics {
   display: flex;
   flex-wrap: wrap;
@@ -325,6 +605,20 @@ onMounted(() => spendingStore.load(period.value, category.value || undefined))
   .spending-overview__filter {
     width: 100%;
     flex-basis: auto;
+  }
+
+  .spending-date-range__fields {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spending-date-range label,
+  .spending-date-range input {
+    width: 100%;
+  }
+
+  .spending-goal {
+    flex-basis: 100%;
   }
 }
 </style>

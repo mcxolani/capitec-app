@@ -1,4 +1,10 @@
 export type SpendingPeriod = '7d' | '30d' | '90d' | '1y'
+export type SpendingSort = 'date_desc' | 'date_asc' | 'amount_desc' | 'amount_asc'
+
+export type SpendingDateRange = {
+  startDate?: string
+  endDate?: string
+}
 
 export type CustomerProfile = {
   customerId: string
@@ -42,6 +48,33 @@ export type SpendingTrends = {
     transactionCount: number
     averageTransaction: number
   }[]
+}
+
+export type SpendingGoals = {
+  goals: {
+    id: string
+    category: string
+    monthlyBudget: number
+    currentSpent: number
+    percentageUsed: number
+    daysRemaining: number
+    status: 'on_track' | 'warning' | 'over_budget'
+  }[]
+}
+
+export type SpendingTransactions = {
+  transactions: {
+    id: string
+    date: string
+    merchant: string
+    category: string
+    amount: number
+    description: string
+    paymentMethod: string
+    icon: string
+    categoryColor: string
+  }[]
+  pagination: { total: number; limit: number; offset: number; hasMore: boolean }
 }
 
 export type SpendingFilters = {

@@ -23,7 +23,7 @@ function isActive(path: string) {
   <header class="site-header">
     <div class="site-header__content">
       <RouterLink to="/" class="site-brand" aria-label="Capitec home">
-         <img src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg" alt="" aria-hidden="true" />
+         <img height="20px" src="https://www.capitecbank.co.za/globalassets/approved-images/icons/capitec-logo-small.svg" alt="" aria-hidden="true" />
         <span>Capitec</span>
       </RouterLink>
 
