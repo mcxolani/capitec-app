@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { checkEligibility, fetchValidationRules } from '@/api/loanApi'
 import { fillSpecExample } from '@/test/loanForm'
+import { LOAN_VALIDATION_RULES } from '@/test/loanData'
 import LoanEligibilityPage from './LoanEligibilityPage'
 
 // real mocked API by default; individual tests make calls fail
@@ -10,7 +11,7 @@ vi.mock('@/api/loanApi', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api/loanApi')>()
   return {
     ...actual,
-    fetchValidationRules: vi.fn(actual.fetchValidationRules),
+    fetchValidationRules: vi.fn(),
     checkEligibility: vi.fn(actual.checkEligibility),
   }
 })
@@ -18,6 +19,10 @@ vi.mock('@/api/loanApi', async (importOriginal) => {
 const submit = () => userEvent.click(screen.getByRole('button', { name: 'Check eligibility' }))
 
 describe('LoanEligibilityPage', () => {
+  beforeEach(() => {
+    vi.mocked(fetchValidationRules).mockResolvedValue(LOAN_VALIDATION_RULES)
+  })
+
   it('shows the form once the validation rules have loaded', async () => {
     render(<LoanEligibilityPage />)
 

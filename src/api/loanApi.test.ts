@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { LOAN_PRODUCTS, LOAN_VALIDATION_RULES } from '@/test/loanData'
 import type { EligibilityRequest } from '@/types/loan'
 import { calculateRate, checkEligibility, fetchLoanProducts, fetchValidationRules } from './loanApi'
 
@@ -11,27 +12,28 @@ async function settle<T>(promise: Promise<T>): Promise<T> {
 describe('loanApi', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((input: string) =>
+        Promise.resolve({
+          ok: true,
+          json: async () =>
+            input === '/api/loans/products' ? { products: LOAN_PRODUCTS } : LOAN_VALIDATION_RULES,
+        }),
+      ),
+    )
   })
 
   afterEach(() => {
     vi.useRealTimers()
   })
 
-  it('waits before responding, like a network call', async () => {
-    const onDone = vi.fn()
-    void fetchLoanProducts().then(onDone)
-
-    await vi.advanceTimersByTimeAsync(299)
-    expect(onDone).not.toHaveBeenCalled()
-    await vi.advanceTimersByTimeAsync(1)
-    expect(onDone).toHaveBeenCalled()
-  })
-
   describe('fetchLoanProducts', () => {
-    it('returns the personal loan and vehicle finance products from the spec', async () => {
-      const products = await settle(fetchLoanProducts())
+    it('loads the personal loan and vehicle finance products', async () => {
+      const products = await fetchLoanProducts()
 
       expect(products.map((p) => p.id)).toEqual(['personal_loan', 'vehicle_loan'])
+      expect(fetch).toHaveBeenCalledWith('/api/loans/products', undefined)
       expect(products[0]).toMatchObject({
         minAmount: 5000,
         maxAmount: 300000,
@@ -43,8 +45,8 @@ describe('loanApi', () => {
   })
 
   describe('fetchValidationRules', () => {
-    it('returns the spec’s rules and messages', async () => {
-      const rules = await settle(fetchValidationRules())
+    it('loads the validation rules and messages', async () => {
+      const rules = await fetchValidationRules()
 
       expect(rules.personalInfo.age).toEqual({
         min: 18,
@@ -60,6 +62,7 @@ describe('loanApi', () => {
         'Loan amount must be between R5,000 and R300,000',
       )
       expect(rules.loanDetails.loanTerm).toMatchObject({ min: 6, max: 60 })
+      expect(fetch).toHaveBeenCalledWith('/api/loans/validation-rules', undefined)
     })
   })
 
