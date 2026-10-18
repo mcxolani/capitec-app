@@ -7,12 +7,7 @@ const router = createRouter({
     { path: '/branch-locator', component: () => import('@/views/BranchLocatorView.vue') },
     {
       path: '/loan-eligibility',
-      component: () => import('@/views/FeaturePlaceholderView.vue'),
-      props: {
-        eyebrow: 'Loan tools',
-        title: 'Loan eligibility',
-        description: 'Get an estimate of what you could borrow and repay each month.',
-      },
+      component: () => import('@/views/LoanEligibilityView.vue'),
     },
     {
       path: '/spending-insights',
