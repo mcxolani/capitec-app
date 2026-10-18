@@ -6,6 +6,7 @@ import Aura from '@primeuix/themes/aura'
 import App from './App.vue'
 import router from './router'
 import './index.css'
+import 'leaflet/dist/leaflet.css'
 import '@fontsource-variable/manrope'
 
 const app = createApp(App)
