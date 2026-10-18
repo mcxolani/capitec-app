@@ -145,7 +145,7 @@ export function createSpendingApi(now = new Date(), delay = 250) {
   }
 }
 
-function spendingUrl(endpoint: string, query: TransactionQuery): string {
+function customerUrl(endpoint: string, query: TransactionQuery): string {
   const params = new URLSearchParams()
   if (query.period) params.set('period', query.period)
   if (query.startDate) params.set('startDate', query.startDate)
@@ -156,19 +156,19 @@ function spendingUrl(endpoint: string, query: TransactionQuery): string {
   if (query.sortBy) params.set('sortBy', query.sortBy)
 
   const search = params.toString()
-  return `/api/customers/12345/spending/${endpoint}${search ? `?${search}` : ''}`
+  return `/api/customers/12345/${endpoint}${search ? `?${search}` : ''}`
 }
 
 function fetchSpendingSummary(query: SpendingQuery = {}): Promise<SpendingSummary> {
-  return requestJson(spendingUrl('summary', query))
+  return requestJson(customerUrl('spending/summary', query))
 }
 
 function fetchSpendingCategories(query: SpendingQuery = {}): Promise<SpendingCategories> {
-  return requestJson(spendingUrl('categories', query))
+  return requestJson(customerUrl('spending/categories', query))
 }
 
 function fetchSpendingTransactions(query: TransactionQuery = {}): Promise<SpendingTransactions> {
-  return requestJson(spendingUrl('transactions', query))
+  return requestJson(customerUrl('transactions', query))
 }
 
 function fetchSpendingTrends(months = 12, category?: string): Promise<SpendingTrends> {
