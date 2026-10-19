@@ -54,14 +54,6 @@
   text-transform: capitalize;
 }
 
-.spending-demo {
-  background: #eef3fc;
-  color: var(--color-blue-dark);
-  border-radius: 6px;
-  padding: 0.45rem 0.7rem;
-  font-size: 0.85rem;
-}
-
 .spending-controls {
   display: grid;
   gap: 1rem;
@@ -406,10 +398,6 @@
 .spending-transactions__footer {
   text-align: center;
   margin-top: 1rem;
-}
-
-.spending-page__disclaimer {
-  margin: 0;
 }
 
 @media (max-width: 1000px) {

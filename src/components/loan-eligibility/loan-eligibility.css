@@ -131,12 +131,6 @@
   font-weight: 600;
 }
 
-.loan-result__disclaimer {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.85rem;
-}
-
 /* page */
 .loan-page__intro {
   max-width: 42rem;

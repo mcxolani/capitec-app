@@ -1,4 +1,4 @@
-import { Badge, Card } from '@radix-ui/themes'
+import { Card } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import { spendingApi } from '@/api/spendingApi'
 import BudgetGoals from '@/components/spending-insights/BudgetGoals'
@@ -46,9 +46,6 @@ export default function SpendingInsightsPage() {
                     Member since {formatDate(customer.joinDate)}
                   </p>
                 </div>
-                <Badge size="2" className="spending-demo">
-                  Demo account
-                </Badge>
               </>
             )}
           </ResourcePanel>
@@ -150,9 +147,6 @@ export default function SpendingInsightsPage() {
           />
         </section>
       </Card>
-      <p className="spending-muted spending-page__disclaimer">
-        Demo data. Amounts in rands, dates in South African time.
-      </p>
     </section>
   )
 }

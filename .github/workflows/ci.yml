@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend-vue/package-lock.json
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
@@ -26,6 +29,10 @@ jobs:
       - run: npm run build
         env:
           VITE_GOOGLE_MAPS_API_KEY: ci-placeholder
+      - run: npm ci --prefix frontend-vue
+      - run: npm run lint --prefix frontend-vue
+      - run: npm run typecheck --prefix frontend-vue
+      - run: npm run build --prefix frontend-vue
 
   docker:
     runs-on: ubuntu-latest
@@ -34,6 +41,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build --build-arg VITE_GOOGLE_MAPS_API_KEY=ci-placeholder -t capitec-app .
       - run: docker build -t capitec-api ./backend/springboot
+      - run: docker build -t capitec-vue ./frontend-vue
       - run: docker compose config --quiet
         env:
           VITE_GOOGLE_MAPS_API_KEY: ci-placeholder
+      - run: docker compose -f frontend-vue/compose.yaml config --quiet

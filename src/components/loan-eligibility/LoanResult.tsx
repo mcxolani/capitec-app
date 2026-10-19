@@ -103,11 +103,6 @@ export default function LoanResult({ result, loanTerm, headingRef }: Props) {
           </div>
         </dl>
       </Card>
-
-      <p className="loan-result__disclaimer">
-        This is an estimate based on simulated data, not a credit decision or a loan offer. A real
-        application includes a full credit check and affordability assessment.
-      </p>
     </section>
   )
 }

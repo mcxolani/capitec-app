@@ -7,9 +7,6 @@ import type {
 import { formatRand } from './currency'
 import { repaymentTotals, roundCents } from './loanCalculations'
 
-// Simulated lending rules for a personal loan. These are illustrative, not a
-// real credit policy; every threshold is named here so it can be reviewed.
-
 export const MIN_LOAN = 5000
 export const MAX_LOAN = 300000
 export const MIN_INCOME = 5000
@@ -113,7 +110,6 @@ export function assessEligibility(request: EligibilityRequest): EligibilityRespo
 
   const riskCategory = declined ? 'high' : riskCategoryFor(debtToIncome, creditScore)
 
-  // a rough indication only, capped so the simulator never promises approval
   const usage = maxPayment > 0 ? recommended.monthlyPayment / maxPayment : 1
   const approvalLikelihood = recommendedAmount
     ? Math.min(

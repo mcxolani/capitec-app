@@ -75,7 +75,6 @@ export default function Home() {
             </Card>
           ))}
         </div>
-        <p className="home-page__disclaimer">Loan estimates and spending figures use demo data.</p>
       </section>
     </div>
   )
