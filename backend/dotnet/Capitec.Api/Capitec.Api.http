@@ -1,0 +1,11 @@
+@Capitec.Api_HostAddress = http://localhost:5241
+
+GET {{Capitec.Api_HostAddress}}/api/health
+Accept: application/json
+
+###
+
+GET {{Capitec.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###

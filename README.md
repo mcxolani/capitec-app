@@ -74,6 +74,8 @@ Docker Compose requires Docker Engine and the Compose plugin. The Maps API key i
 
 To run the standalone Vue demo with Spring Boot, use [`frontend-vue/README.md`](frontend-vue/README.md): `docker compose -f frontend-vue/compose.yaml up --build`. It opens at `http://localhost:8082` and does not need the React app's Google Maps key.
 
+The alternative .NET API can run beside the existing apps on port `8084`. See [`backend/dotnet/README.md`](backend/dotnet/README.md) for Docker and local run instructions, including how to point either frontend at it.
+
 ### Run locally for development
 
 Requirements: Node.js 22+, npm, Java 21 and Maven.

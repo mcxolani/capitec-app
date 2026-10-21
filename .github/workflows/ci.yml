@@ -29,6 +29,10 @@ jobs:
       - run: npm run build
         env:
           VITE_GOOGLE_MAPS_API_KEY: ci-placeholder
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet build backend/dotnet/Capitec.Api/Capitec.Api.csproj --configuration Release
       - run: npm ci --prefix frontend-vue
       - run: npm run lint --prefix frontend-vue
       - run: npm run typecheck --prefix frontend-vue
@@ -42,7 +46,9 @@ jobs:
       - run: docker build --build-arg VITE_GOOGLE_MAPS_API_KEY=ci-placeholder -t capitec-app .
       - run: docker build -t capitec-api ./backend/springboot
       - run: docker build -t capitec-vue ./frontend-vue
+      - run: docker build -f backend/dotnet/Dockerfile -t capitec-dotnet-api backend/dotnet
       - run: docker compose config --quiet
         env:
           VITE_GOOGLE_MAPS_API_KEY: ci-placeholder
       - run: docker compose -f frontend-vue/compose.yaml config --quiet
+      - run: docker compose -f backend/dotnet/compose.yaml config --quiet
