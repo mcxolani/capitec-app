@@ -1,10 +1,12 @@
 services:
   api:
     build:
-      context: ../backend/springboot
-    image: capitec-api
+      context: ../backend/dotnet
+    image: capitec-dotnet-api
     ports:
-      - '${API_PORT:-8083}:8081'
+      - '${DOTNET_API_PORT:-8084}:8081'
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     restart: unless-stopped
 
   vue:
