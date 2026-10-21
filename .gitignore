@@ -13,6 +13,10 @@ dist-ssr
 coverage
 *.local
 
+# .NET build outputs
+**/bin/
+**/obj/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
