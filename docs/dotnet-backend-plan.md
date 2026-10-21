@@ -2,7 +2,7 @@
 
 This is a simple C# backend option for the existing Capitec demo frontend. It replaces the in-memory API mocks with one ASP.NET Core API and keeps the same routes and JSON as the Spring Boot option.
 
-This plan and [springboot-backend-plan.md](springboot-backend-plan.md) are alternatives. Choose one backend to implement.
+The .NET and [Spring Boot](springboot-backend-plan.md) projects are separate implementations of the same API contract. Either can serve the existing frontends by changing the Vite API proxy target.
 
 ## Keep the first version small
 
