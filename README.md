@@ -61,20 +61,18 @@ Input validation lives in the filter controls and URL parser. The local mock API
 
 ## Getting started
 
-### Run the frontend and API together
+### Run with Docker
 
-```sh
-cp .env.example .env.local # set VITE_GOOGLE_MAPS_API_KEY in this file
-docker compose --env-file .env.local up --build
-```
+Docker Engine and the Docker Compose plugin are required. The repository has two ready-to-run stacks:
 
-Open the app at `http://localhost:8080`. Spring Boot runs at `http://localhost:8081`, with Swagger UI at `http://localhost:8081/swagger-ui/index.html`. Stop both containers with `docker compose --env-file .env.local down`.
+| Frontend | Backend     | Start                                                                                           | Open                    |
+| -------- | ----------- | ----------------------------------------------------------------------------------------------- | ----------------------- |
+| React    | Spring Boot | Copy `.env.example` to `.env.local`, then run `docker compose --env-file .env.local up --build` | <http://localhost:8080> |
+| Vue      | .NET        | Run `docker compose -f frontend-vue/compose.yaml up --build`                                    | <http://localhost:8082> |
 
-Docker Compose requires Docker Engine and the Compose plugin. The Maps API key is required to use the branch map. To avoid host port conflicts, set `PORT` for the web app or `API_PORT` for Spring Boot, for example `PORT=8082 API_PORT=18082 docker compose --env-file .env.local up --build`.
+The React branch map needs a Google Maps API key; the rest of the app works without one. Vue does not need that key. Swagger UI is at `http://localhost:8081/swagger-ui/index.html` for Spring Boot and `http://localhost:8084/swagger` for .NET.
 
-To run the standalone Vue demo with Spring Boot, use [`frontend-vue/README.md`](frontend-vue/README.md): `docker compose -f frontend-vue/compose.yaml up --build`. It opens at `http://localhost:8082` and does not need the React app's Google Maps key.
-
-The alternative .NET API can run beside the existing apps on port `8084`. See [`backend/dotnet/README.md`](backend/dotnet/README.md) for Docker and local run instructions, including how to point either frontend at it.
+Stop the React stack with `docker compose --env-file .env.local down`. Stop the Vue stack with `docker compose -f frontend-vue/compose.yaml down`.
 
 ### Run locally for development
 
